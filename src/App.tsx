@@ -1,7 +1,9 @@
-import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { Route } from 'react-router-dom';
+import { IonApp, IonItem, IonLabel, IonList, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import React from 'react';
+import { IonButtons, IonContent, IonHeader, IonMenu, IonMenuButton, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -22,23 +24,58 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-// Boostrap
+// Bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Home2 from './pages/ReadingPage';
+import FlashingPage from './pages/FlashingPage';
+import ReadingPage from './pages/ReadingPage';
 
 setupIonicReact();
 
 const App: React.FC = () => (
   <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/">
-          <Redirect to="/home" />
-        </Route>
-      </IonRouterOutlet>
-    </IonReactRouter>
+    <IonMenu contentId="main-content">
+      <IonHeader>
+        <IonToolbar>
+          <IonTitle>Menu Content</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonList>
+          <IonItem routerLink="/flashing">
+            <IonLabel>Flash</IonLabel>
+          </IonItem>
+          <IonItem routerLink="/reading">
+            <IonLabel>Read</IonLabel>
+          </IonItem>
+        </IonList>
+      </IonContent>
+    </IonMenu>
+    <IonPage id="main-content">
+      <IonHeader>
+        <IonToolbar>
+          <IonButtons slot="start">
+            <IonMenuButton></IonMenuButton>
+          </IonButtons>
+          <IonTitle>ENIGMX</IonTitle>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent className="ion-padding">
+        <IonReactRouter>
+          <IonRouterOutlet>
+            <Route exact path="/flashing">
+              <FlashingPage />
+            </Route>
+            <Route exact path="/reading">
+              <ReadingPage />
+            </Route>
+            <Route exact path="/">
+              <ReadingPage />
+            </Route>
+          </IonRouterOutlet>
+        </IonReactRouter>
+      </IonContent>
+    </IonPage>
   </IonApp>
 );
 
