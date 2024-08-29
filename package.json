@@ -9,8 +9,10 @@
     "preview": "vite preview",
     "cypress:open": "cypress open",
     "cypress": "cypress run",
-    "test": "vitest",
-    "lint": "eslint"
+    "test:watch": "vitest",
+    "test": "vitest run",
+    "lint": "eslint",
+    "prepare": "husky"
   },
   "dependencies": {
     "@capacitor/android": "^5.7.0",
@@ -46,6 +48,7 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.35.0",
     "globals": "^15.9.0",
+    "husky": "^9.1.5",
     "jsdom": "^22.1.0",
     "terser": "^5.4.0",
     "typescript": "^5.1.6",

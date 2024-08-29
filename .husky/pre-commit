@@ -1,0 +1,4 @@
+echo "Running unit tests..."
+npm run test 
+echo "Running e2e tests..."
+npm run cypress
