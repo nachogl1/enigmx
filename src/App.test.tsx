@@ -7,9 +7,5 @@ describe("App should", () => {
             const {baseElement} = render(<App/>);
             expect(baseElement).toBeDefined();
         });
-
-        it.skip('initial screen is reading screen', () => {
-
-        });
     }
 )
