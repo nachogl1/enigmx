@@ -10,7 +10,7 @@ describe("Reading Modal should", () => {
 
         await waitFor(() => {
             const readingIcon = getByTestId("reading__loading-icon");
-            const readingMessage = getByText("Reading, get closer to your NTAG");
+            const readingMessage = getByText("Reading, get close to your NTAG");
 
             expect(readingIcon).toBeInTheDocument();
             expect(readingMessage).toBeInTheDocument();
