@@ -1,5 +1,6 @@
-import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonSpinner, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonSpinner, IonToolbar } from '@ionic/react';
 import React, { useState } from 'react';
+import ReadingModal from './components/ReadingModal/ReadingModal';
 
 const ReadingPage: React.FC = () => {
   const [isReading, setReading] = useState(false);
@@ -8,21 +9,7 @@ const ReadingPage: React.FC = () => {
     <div style={{ height: "100%", alignContent: "center", textAlign: "center" }}>
 
       {!isReading && <IonButton onClick={() => setReading(true)} fill="outline">START READING</IonButton>}
-
-      <IonModal data-testid="reading__loading-icon" isOpen={isReading}>
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="end">
-              <IonButton onClick={() => setReading(false)}>Close</IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <p>
-            Loading Icon for Reading here
-          </p>
-        </IonContent>
-      </IonModal>
+      <ReadingModal  isReading={isReading} setReading={setReading}></ReadingModal>
 
     </div>
   );
