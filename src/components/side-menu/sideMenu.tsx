@@ -4,7 +4,7 @@ import { IonContent, IonHeader, IonMenu, IonTitle, IonToolbar } from '@ionic/rea
 import { IonReactRouter } from "@ionic/react-router";
 import { Route } from "react-router-dom";
 import FlashingPage from "../../pages/flashing/FlashingPage";
-import ReadingPage from "../../pages/ReadingPage";
+import ReadingPage from "../../pages/reading/ReadingPage";
 
 const applicationTitle = "ENIGMX";
 
