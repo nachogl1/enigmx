@@ -1,6 +1,5 @@
-import { fireEvent, getByText, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
 import SideMenu from "../sideMenu";
-import React from "react";
 
 
 describe("SideMenu should", () => {
@@ -9,7 +8,7 @@ describe("SideMenu should", () => {
         expect(getByText("Menu")).toBeInTheDocument();
     });
     it('render app title correctly', () => {
-        const { getByText } = render(<SideMenu></SideMenu>);
+        const { getByText } = render(<SideMenu></SideMenu>); 
         expect(getByText("ENIGMX")).toBeInTheDocument();
     });
 
