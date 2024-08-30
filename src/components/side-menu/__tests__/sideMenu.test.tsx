@@ -1,6 +1,14 @@
 import { render } from "@testing-library/react";
 import SideMenu from "../sideMenu";
+import { describe, expect, it, vi } from 'vitest';
+import { TagEvent } from "react-native-nfc-manager";
 
+
+vi.mock('../../../services/reading/reading.service', () => {
+    return {
+        readFromNtag: () => Promise.resolve({} as TagEvent)
+    }
+});
 
 describe("SideMenu should", () => {
     it('render correctly', () => {

@@ -9,7 +9,7 @@ const ReadingPage: React.FC = () => {
     <div style={{ height: "100%", alignContent: "center", textAlign: "center" }}>
 
       {!isReading && <IonButton onClick={() => setReading(true)} fill="outline">START READING</IonButton>}
-      <ReadingModal isReading={isReading} setReading={setReading}></ReadingModal>
+      {isReading && <ReadingModal isReading={isReading} setReading={setReading}></ReadingModal>}
 
     </div>
   );

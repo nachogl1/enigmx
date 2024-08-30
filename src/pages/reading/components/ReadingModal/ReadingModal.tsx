@@ -1,5 +1,7 @@
 import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonSpinner, IonToolbar } from "@ionic/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { TagEvent } from "react-native-nfc-manager";
+import { readFromNtag } from "../../../../services/reading/reading.service";
 
 interface ReadingModalProps {
     isReading: boolean;
@@ -7,6 +9,16 @@ interface ReadingModalProps {
 }
 
 function ReadingModal({ isReading, setReading }: ReadingModalProps) {
+
+    const [readResult, setReadResult] = useState<TagEvent | null>(null);
+
+    useEffect(() => {
+        const read = async () => {
+            const readingResult = await readFromNtag();
+            setReadResult(readingResult);
+        }
+        read();
+    }, []);
 
     return (
 
@@ -22,6 +34,7 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
                 <div style={{ alignContent: "center", textAlign: "center" }}>
                     <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
                     <p>Reading, get close to your NTAG</p>
+                    <p>{JSON.stringify(readResult)}</p>
                 </div>
             </IonContent>
         </IonModal>

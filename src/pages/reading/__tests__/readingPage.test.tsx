@@ -1,8 +1,15 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
+import { TagEvent } from "react-native-nfc-manager";
+import { describe, expect, it, vi } from 'vitest';
 import ReadingPage from "../ReadingPage";
 
-describe("Reading Page should", () => {
+vi.mock('../../../services/reading/reading.service', () => {
+    return {
+        readFromNtag: () => Promise.resolve({} as TagEvent)
+    }
+});
 
+describe("Reading Page should", () => {
     it('renders READ button', () => {
         const { getByText } = render(<ReadingPage></ReadingPage>);
         expect(getByText("START READING")).toBeInTheDocument();
