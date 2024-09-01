@@ -8,6 +8,13 @@ export default defineConfig({
     react(),
     legacy()
   ],
+  build: {
+    rollupOptions: {
+      external: [
+        "react-native"
+      ],
+    },
+  },
   test: {
     globals: true,
     environment: 'jsdom',

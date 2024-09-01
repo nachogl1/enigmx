@@ -1,7 +1,7 @@
+import { NfcTag } from "@awesome-cordova-plugins/nfc";
 import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonSpinner, IonToolbar } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { TagEvent } from "react-native-nfc-manager";
-import { readFromNtag } from "../../../../services/reading/reading.service";
+import { readFromNtagV2 } from "../../../../services/readingV2/readingV2.service";
 
 interface ReadingModalProps {
     isReading: boolean;
@@ -10,11 +10,11 @@ interface ReadingModalProps {
 
 function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
-    const [readResult, setReadResult] = useState<TagEvent | null>(null);
+    const [readResult, setReadResult] = useState<NfcTag>({});
 
     useEffect(() => {
         const read = async () => {
-            const readingResult = await readFromNtag();
+            const readingResult = await readFromNtagV2();
             setReadResult(readingResult);
         }
         read();
