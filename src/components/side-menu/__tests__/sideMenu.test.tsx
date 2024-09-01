@@ -1,14 +1,6 @@
 import { render } from "@testing-library/react";
+import { describe, expect, it } from 'vitest';
 import SideMenu from "../sideMenu";
-import { describe, expect, it, vi } from 'vitest';
-import { TagEvent } from "react-native-nfc-manager";
-
-
-vi.mock('../../../services/reading/reading.service', () => {
-    return {
-        readFromNtag: () => Promise.resolve({} as TagEvent)
-    }
-});
 
 describe("SideMenu should", () => {
     it('render correctly', () => {
@@ -16,7 +8,7 @@ describe("SideMenu should", () => {
         expect(getByText("Menu")).toBeInTheDocument();
     });
     it('render app title correctly', () => {
-        const { getByText } = render(<SideMenu></SideMenu>); 
+        const { getByText } = render(<SideMenu></SideMenu>);
         expect(getByText("ENIGMX")).toBeInTheDocument();
     });
 
