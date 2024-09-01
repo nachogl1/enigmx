@@ -1,39 +1,19 @@
-import { NdefRecord, TagEvent } from 'react-native-nfc-manager';
+import { NfcTag } from '@awesome-cordova-plugins/nfc';
+import { Observable, of, throwError } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import { readFromNtagV2 } from "../readingV2.service";
 
-const tagEvent: TagEvent = {
-    ndefMessage: [{
-        type: "mockType"
-    } as NdefRecord]
+const nfcTag: NfcTag = {
+    type: "testTag",
 };
 
-const requestTechnologyMock = vi.fn();
-const cancelTechnologyRequestMock = vi.fn();
-const getTagMock = vi.fn();
-const startMock = vi.fn();
+let readerModeMock: Observable<NfcTag | Error> = of(nfcTag);
 
-vi.mock('react-native-nfc-manager', () => {
+vi.mock('@awesome-cordova-plugins/nfc', () => {
     return {
-        default: {
-            start: () => startMock(),
-            requestTechnology: () => requestTechnologyMock(),
-            getTag: () => getTagMock(),
-            cancelTechnologyRequest: () => cancelTechnologyRequestMock(),
-        },
-        NfcTech: {
-            Ndef: 'Ndef',
-            NfcA: 'NfcA',
-            NfcB: 'NfcB',
-            NfcF: 'NfcF',
-            NfcV: 'NfcV',
-            IsoDep: 'IsoDep',
-            MifareClassic: 'MifareClassic',
-            MifareUltralight: 'MifareUltralight',
-            MifareIOS: 'mifare',
-            Iso15693IOS: 'iso15693',
-            FelicaIOS: 'felica',
-            NdefFormatable: 'NdefFormatable',
+        NFC: {
+            readerMode: (flag: number) => readerModeMock,
+            FLAG_READER_NFC_A: 1,
         }
     }
 });
@@ -41,22 +21,17 @@ vi.mock('react-native-nfc-manager', () => {
 describe('Reading service should', () => {
 
     it('return the read value', async () => {
-        getTagMock.mockResolvedValue(tagEvent);
         const result = await readFromNtagV2();
-        expect(result?.ndefMessage[0].type).toBe("mockType");
-        expect(cancelTechnologyRequestMock).toHaveBeenCalled();
-        expect(startMock).toHaveBeenCalled();
+        expect(result?.type).toBe("testTag");
     });
 
     it('errors out gracefully', async () => {
-        requestTechnologyMock.mockRejectedValue("Test Error Message");
-        expect(startMock).toHaveBeenCalled();
-
-        expect(cancelTechnologyRequestMock).toHaveBeenCalled();
+        readerModeMock = throwError(() => "Test Error Message")
 
         await expect(async () =>
             await readFromNtagV2()).
-            rejects.toThrowError(/^ERROR when reading:Test Error Message$/);
+            rejects.toThrowError(/^Test Error Message$/);
     });
 
 });
+
