@@ -26,16 +26,16 @@ vi.mock('@awesome-cordova-plugins/nfc', () => {
 describe("Reading Modal should", () => {
     it.only('start reading when renders', async () => {
 
-        const { getByText, getByTestId } = render(<ReadingModal isReading={true}
+        const { getByText, queryByTestId } = render(<ReadingModal isReading={true}
             setReading={{} as Dispatch<SetStateAction<boolean>>}></ReadingModal>);
 
         await waitFor(() => {
-            const readingIcon = getByTestId("reading__loading-icon");
-            const readingMessage = getByText("Reading, get close to your NTAG");
+            const readingLoadingIcon = queryByTestId("reading__loading-icon");
+            const readingMessage = queryByTestId("Reading, get close to your NTAG");
             const resultMessage = getByText(JSON.stringify(nfcTag));
 
-            expect(readingIcon).toBeInTheDocument();
-            expect(readingMessage).toBeInTheDocument();
+            expect(readingLoadingIcon).not.toBeInTheDocument();
+            expect(readingMessage).not.toBeInTheDocument();
             expect(resultMessage).toBeInTheDocument();
 
         });

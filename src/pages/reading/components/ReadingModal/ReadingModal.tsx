@@ -10,7 +10,7 @@ interface ReadingModalProps {
 
 function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
-    const [readResult, setReadResult] = useState<NfcTag>({});
+    const [readResult, setReadResult] = useState<NfcTag | null>(null);
 
     useEffect(() => {
         const read = async () => {
@@ -32,9 +32,15 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
             </IonHeader>
             <IonContent className="ion-padding">
                 <div style={{ alignContent: "center", textAlign: "center" }}>
-                    <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
-                    <p>Reading, get close to your NTAG</p>
-                    <p>{JSON.stringify(readResult)}</p>
+                    {!readResult &&
+                        <>
+                            <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
+                            <p>Reading, get close to your NTAG</p>
+                        </>
+
+                    }
+
+                    {readResult && <p>{JSON.stringify(readResult)}</p>}
                 </div>
             </IonContent>
         </IonModal>
