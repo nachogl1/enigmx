@@ -1,4 +1,5 @@
-import { NFC, NfcTag } from '@awesome-cordova-plugins/nfc';
+
+import { NfcTag, NFC } from '@awesome-cordova-plugins/nfc';
 import { firstValueFrom } from 'rxjs';
 
 
