@@ -7,10 +7,6 @@ describe("SideMenu should", () => {
         const { getByText } = render(<SideMenu></SideMenu>);
         expect(getByText("Menu")).toBeInTheDocument();
     });
-    it('render app title correctly', () => {
-        const { getByText } = render(<SideMenu></SideMenu>);
-        expect(getByText("ENIGMX")).toBeInTheDocument();
-    });
 
     it('have flash as option', () => {
         const { getByText } = render(<SideMenu></SideMenu>);

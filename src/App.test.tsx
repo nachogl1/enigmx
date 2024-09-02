@@ -8,5 +8,15 @@ describe("App should", () => {
         const { baseElement } = render(<App />);
         expect(baseElement).toBeDefined();
     });
+
+    it('render app title correctly', () => {
+        const { getByText } = render(<App></App>);
+        expect(getByText("ENIGMX")).toBeInTheDocument();
+    });
+
+    it('render side menu button', () => {
+        const { getByTestId } = render(<App></App>);
+        expect(getByTestId("sideMenu__button")).toBeInTheDocument();
+    });
 }
 )
