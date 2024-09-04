@@ -1,32 +1,38 @@
-import { IonButton, IonInput } from '@ionic/react';
-import React from 'react';
+import { IonButton } from '@ionic/react';
+import React, { useState } from 'react';
+import { flashNtag } from '../../services/flashing/flashing.service';
 
 const FlashingPage: React.FC = () => {
+
+  const [message, setMessage] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+
+  const flashingHandler = (message: string, pk:string)=>{
+
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", alignContent: "center", justifyContent: "center", alignItems: "center" }}>
-      <IonInput
-        data-testid="message-input"
-        style={{ width: "80%", marginBottom: "5vh" }}
-        type="password"
-        fill="solid"
-        label="Message"
-        labelPlacement="floating"
-        helperText="Cannot be empty"
-        errorText="Cannot be empty"
-      ></IonInput>
 
-      <IonInput
-        data-testid="pk-input"
-        style={{ width: "80%", marginBottom: "5vh" }}
-        type="password"
-        fill="solid"
-        label="Private Key"
-        labelPlacement="floating"
-        helperText="Cannot be empty"
-        errorText="Cannot be empty"
-      ></IonInput>
+      <div className="input-group mb-3"
+        style={{ width: "80%", marginBottom: "5vh" }}>
+        <input data-testid="message-input" type="password" className="form-control" placeholder="Message" onChange={(e) => {
+          setMessage(e.target.value as string)
+        }
+        }></input>
+      </div>
 
-      <IonButton onClick={() => { }} fill="outline">FLASH</IonButton>
+      <div className="input-group mb-3"
+        style={{ width: "80%", marginBottom: "5vh" }}>
+        <input data-testid="pk-input" type="password" className="form-control" placeholder="Private Key" onChange={(e) => {
+          setPassword(e.target.value as string)
+        }
+        }></input>
+      </div>
+
+
+      {(message && password) && <IonButton onClick={() => { flashNtag(message) }} fill="outline">FLASH</IonButton>}
+      {(!message || !password) && <IonButton disabled fill="outline">FLASH</IonButton>}
     </div>
   );
 };
