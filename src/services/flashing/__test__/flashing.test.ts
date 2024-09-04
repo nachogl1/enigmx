@@ -28,7 +28,7 @@ vi.mock('@awesome-cordova-plugins/nfc', () => {
 
 describe('Flashing service should', () => {
 
-    beforeAll(()=>{
+    beforeEach(()=>{
         vi.clearAllMocks();
     });
 

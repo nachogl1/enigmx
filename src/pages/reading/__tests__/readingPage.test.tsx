@@ -17,7 +17,7 @@ vi.mock('../../../services/readingV2/readingV2.service', () => ({
 }))
 
 describe("Reading Page should", () => {
-    beforeAll(() => {
+    beforeEach(() => {
         vi.clearAllMocks();
     });
     it('renders READ button', () => {
@@ -25,12 +25,12 @@ describe("Reading Page should", () => {
         expect(getByText("START READING")).toBeInTheDocument();
     });
 
-    it('show  read loading when clicking START READING', () => {
+    it('show  read loading when clicking START READING', async () => {
         const { getByText, getByTestId } = render(<ReadingPage></ReadingPage>);
         const readButton = getByText("START READING");
 
 
-        waitFor(() => {
+        await waitFor(() => {
             fireEvent.click(readButton);
         });
 

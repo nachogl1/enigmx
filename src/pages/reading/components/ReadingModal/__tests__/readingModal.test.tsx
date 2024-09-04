@@ -19,7 +19,7 @@ vi.mock('../../../../../services/readingV2/readingV2.service', () => ({
 }))
 
 describe("Reading Modal should", () => {
-    beforeAll(() => {
+    beforeEach(() => {
         vi.clearAllMocks();
     });
     it('start reading when renders', async () => {
