@@ -19,6 +19,9 @@ vi.mock('../../../../../services/readingV2/readingV2.service', () => ({
 }))
 
 describe("Reading Modal should", () => {
+    beforeAll(() => {
+        vi.clearAllMocks();
+    });
     it('start reading when renders', async () => {
 
         const { getByText, queryByTestId } = render(<ReadingModal isReading={true}

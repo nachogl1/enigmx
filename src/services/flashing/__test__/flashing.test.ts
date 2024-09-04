@@ -1,5 +1,5 @@
 import { NdefRecord } from "@awesome-cordova-plugins/nfc";
-import { of } from "rxjs";
+import { of, throwError } from "rxjs";
 import { describe, vi } from 'vitest';
 import { flashNtag } from '../flashing.service';
 
@@ -28,6 +28,11 @@ vi.mock('@awesome-cordova-plugins/nfc', () => {
 
 describe('Flashing service should', () => {
 
+    beforeAll(()=>{
+        vi.clearAllMocks();
+    });
+
+    
     it('flash payload', async () => {
         addNdefListenerMock.mockReturnValue(of("testObservable"));
         writeMock.mockResolvedValue("testResultWrite");
@@ -42,6 +47,30 @@ describe('Flashing service should', () => {
         expect(writeMock).toHaveBeenCalledWith([ndefRecordStub]);
         expect(result).toBe("testResultWrite");
     });
+
+    it('fail if add ndef listener fails', async () => {
+        addNdefListenerMock.mockReturnValue(throwError(() => "testErrorObservable"));
+        expect(flashNtag("testData")).rejects.toThrow('testErrorObservable');
+    });
+
+    it('fail if create ndef record fails', async () => {
+        addNdefListenerMock.mockReturnValue(of("testObservable"));
+        textRecordMock.mockImplementation(() => {
+            throw new Error("testError");
+        });
+
+        expect(flashNtag("testData")).rejects.toThrow("testError");
+    });
+
+    it('fail write ndef record fails', async () => {
+        addNdefListenerMock.mockReturnValue(of("testObservable"));
+        textRecordMock.mockReturnValue(ndefRecordStub);
+        writeMock.mockRejectedValue("testError");
+
+
+        expect(flashNtag("testData")).rejects.toThrow("testError");
+    });
+
 
 
 });

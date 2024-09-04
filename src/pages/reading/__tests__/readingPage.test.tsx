@@ -17,6 +17,9 @@ vi.mock('../../../services/readingV2/readingV2.service', () => ({
 }))
 
 describe("Reading Page should", () => {
+    beforeAll(() => {
+        vi.clearAllMocks();
+    });
     it('renders READ button', () => {
         const { getByText } = render(<ReadingPage></ReadingPage>);
         expect(getByText("START READING")).toBeInTheDocument();

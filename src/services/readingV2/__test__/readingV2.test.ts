@@ -20,6 +20,10 @@ vi.mock('@awesome-cordova-plugins/nfc', () => {
 
 describe('Reading service should', () => {
 
+    beforeAll(() => {
+        vi.clearAllMocks();
+    });
+
     it('return the read value', async () => {
         const result = await readFromNtagV2();
         expect(result?.type).toBe("testTag");
