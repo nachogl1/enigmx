@@ -6,7 +6,6 @@ import { describe, it, vi } from 'vitest';
 import ReadingModal from "../ReadingModal";
 
 
-
 const nfcTag: NfcTag = {
     type: "testTag",
 };

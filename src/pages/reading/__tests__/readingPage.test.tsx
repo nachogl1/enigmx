@@ -1,6 +1,5 @@
 import { NfcTag } from "@awesome-cordova-plugins/nfc";
 import { fireEvent, render, waitFor } from "@testing-library/react";
-import { Observable, of, } from 'rxjs';
 import { describe, expect, it, vi } from 'vitest';
 import ReadingPage from "../ReadingPage";
 
@@ -9,16 +8,13 @@ const nfcTag: NfcTag = {
     type: "testTag",
 };
 
-let readerModeMock: Observable<NfcTag | Error> = of(nfcTag);
-
-vi.mock('@awesome-cordova-plugins/nfc', () => {
-    return {
-        NFC: {
-            readerMode: (flag: number) => readerModeMock,
-            FLAG_READER_NFC_A: 1,
-        }
-    }
+const readerModeMock: Promise<NfcTag> = new Promise<NfcTag>((resolve) => {
+    resolve(nfcTag);
 });
+
+vi.mock('../../../services/readingV2/readingV2.service', () => ({
+    readFromNtagV2: () => readerModeMock,
+}))
 
 describe("Reading Page should", () => {
     it('renders READ button', () => {
