@@ -2,8 +2,7 @@
 import { NfcTag } from "@awesome-cordova-plugins/nfc";
 import { render, waitFor } from "@testing-library/react";
 import { Dispatch, SetStateAction } from "react";
-import { Observable, of } from 'rxjs';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, it, vi } from 'vitest';
 import ReadingModal from "../ReadingModal";
 
 
@@ -12,16 +11,13 @@ const nfcTag: NfcTag = {
     type: "testTag",
 };
 
-let readerModeMock: Observable<NfcTag | Error> = of(nfcTag);
-
-vi.mock('@awesome-cordova-plugins/nfc', () => {
-    return {
-        NFC: {
-            readerMode: (flag: number) => readerModeMock,
-            FLAG_READER_NFC_A: 1,
-        }
-    }
+const readerModeMock: Promise<NfcTag> = new Promise<NfcTag>((resolve) => {
+    resolve(nfcTag);
 });
+
+vi.mock('../../../../../services/readingV2/readingV2.service', () => ({
+    readFromNtagV2: () => readerModeMock,
+}))
 
 describe("Reading Modal should", () => {
     it.only('start reading when renders', async () => {
