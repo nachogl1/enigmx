@@ -8,6 +8,13 @@ const FlashingPage: React.FC = () => {
   const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>();
 
+  const flashHandler = () => {
+    setLoading(true);
+    flashNtag(message)
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", alignContent: "center", justifyContent: "center", alignItems: "center" }}>
@@ -29,10 +36,9 @@ const FlashingPage: React.FC = () => {
         </div>
 
 
-        {(message && password) && <IonButton onClick={() => { 
-          flashNtag(message);
-          setLoading(true);
-           }} fill="outline">FLASH</IonButton>}
+        {(message && password) && <IonButton onClick={() => {
+          flashHandler();
+        }} fill="outline">FLASH</IonButton>}
         {(!message || !password) && <IonButton disabled fill="outline">FLASH</IonButton>}
       </>}
 
