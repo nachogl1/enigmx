@@ -1,5 +1,5 @@
 import { IonApp, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonRouterOutlet, IonTitle, IonToolbar, setupIonicReact } from '@ionic/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 
 /* Core CSS required for Ionic components to work properly */
@@ -22,6 +22,7 @@ import '@ionic/react/css/text-transformation.css';
 import './theme/variables.css';
 
 // Bootstrap
+import { NFC } from '@awesome-cordova-plugins/nfc';
 import { IonReactRouter } from '@ionic/react-router';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Route } from 'react-router';
@@ -33,35 +34,58 @@ setupIonicReact();
 
 const applicationTitle = "ENIGMX";
 
-const App: React.FC = () => (
-    <IonApp>
-        <SideMenu></SideMenu>
-        <IonPage id="main-content">
-            <IonHeader>
-                <IonToolbar>
-                    <IonButtons slot="start">
-                        <IonMenuButton data-testid="sideMenu__button"></IonMenuButton>
-                    </IonButtons>
-                    <IonTitle>{applicationTitle}</IonTitle>
-                </IonToolbar>
-            </IonHeader>
-            <IonContent className="ion-padding">
-                <IonReactRouter>
-                    <IonRouterOutlet>
-                        <Route exact path="/flashing">
-                            <FlashingPage />
-                        </Route>
-                        <Route exact path="/reading">
-                            <ReadingPage />
-                        </Route>
-                        <Route exact path="/">
-                            <ReadingPage />
-                        </Route>
-                    </IonRouterOutlet>
-                </IonReactRouter>
-            </IonContent>
-        </IonPage>
-    </IonApp>
-);
+const App: React.FC = () => {
+
+    const [nfcEnabled, setNfcENabled] = useState<boolean>(true);
+
+    useEffect(() => {
+        NFC.enabled()
+            .then(() => {
+                setNfcENabled(true);
+            })
+            .catch(() => {
+                setNfcENabled(false);
+            });
+    });
+
+    return (
+        <IonApp>
+            {nfcEnabled && <>
+                <SideMenu></SideMenu>
+                <IonPage id="main-content">
+                    <IonHeader>
+                        <IonToolbar>
+                            <IonButtons slot="start">
+                                <IonMenuButton data-testid="sideMenu__button"></IonMenuButton>
+                            </IonButtons>
+                            <IonTitle>{applicationTitle}</IonTitle>
+                        </IonToolbar>
+                    </IonHeader>
+                    <IonContent className="ion-padding">
+                        <IonReactRouter>
+                            <IonRouterOutlet>
+                                <Route exact path="/flashing">
+                                    <FlashingPage />
+                                </Route>
+                                <Route exact path="/reading">
+                                    <ReadingPage />
+                                </Route>
+                                <Route exact path="/">
+                                    <ReadingPage />
+                                </Route>
+                            </IonRouterOutlet>
+                        </IonReactRouter>
+                    </IonContent>
+                </IonPage>
+            </>}
+
+            {
+                !nfcEnabled && <div className="alert alert-danger mt-2" data-testid="nfc__warning" role="alert">
+                    NFC not enabled in this device
+                </div>}
+
+        </IonApp>
+    )
+};
 
 export default App;
