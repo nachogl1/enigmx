@@ -39,6 +39,10 @@ const App: React.FC = () => {
     const [nfcEnabled, setNfcENabled] = useState<boolean>(true);
 
     useEffect(() => {
+        if (process.env.NODE_ENV !== "production") {
+            return;
+        }
+
         NFC.enabled()
             .then(() => {
                 setNfcENabled(true);
