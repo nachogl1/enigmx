@@ -11,11 +11,20 @@ interface ReadingModalProps {
 function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
     const [readResult, setReadResult] = useState<NfcTag | null>(null);
+    const [error, setError] = useState<string>("");
 
     useEffect(() => {
         const read = async () => {
-            const readingResult = await readFromNtagV2();
-            setReadResult(readingResult);
+            setError("");
+            const readingResult = readFromNtagV2()
+                .then(
+                    (readingResult) => {
+                        setReadResult(readingResult);
+                    }
+                )
+                .catch((error) => {
+                    setError(error);
+                });
         }
         read();
     }, []);
@@ -41,6 +50,12 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
                     }
 
                     {readResult && <p>{JSON.stringify(readResult)}</p>}
+
+                    {error &&
+                        <div className="alert alert-danger mt-2" data-testid="reading__warning" role="alert">
+                            {error}
+                        </div>}
+
                 </div>
             </IonContent>
         </IonModal>

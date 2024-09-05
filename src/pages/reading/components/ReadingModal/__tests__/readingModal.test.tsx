@@ -10,12 +10,10 @@ const nfcTag: NfcTag = {
     type: "testTag",
 };
 
-const readerModeMock: Promise<NfcTag> = new Promise<NfcTag>((resolve) => {
-    resolve(nfcTag);
-});
+const readerModeMock = vi.fn();
 
 vi.mock('../../../../../services/readingV2/readingV2.service', () => ({
-    readFromNtagV2: () => readerModeMock,
+    readFromNtagV2: () => readerModeMock(),
 }))
 
 describe("Reading Modal should", () => {
@@ -23,6 +21,8 @@ describe("Reading Modal should", () => {
         vi.clearAllMocks();
     });
     it('start reading when renders', async () => {
+
+        readerModeMock.mockResolvedValue(nfcTag);
 
         const { getByText, queryByTestId } = render(<ReadingModal isReading={true}
             setReading={{} as Dispatch<SetStateAction<boolean>>}></ReadingModal>);
@@ -35,6 +35,23 @@ describe("Reading Modal should", () => {
             expect(readingLoadingIcon).not.toBeInTheDocument();
             expect(readingMessage).not.toBeInTheDocument();
             expect(resultMessage).toBeInTheDocument();
+
+        });
+
+    });
+
+    it('show warning if error occurs', async () => {
+
+        readerModeMock.mockRejectedValue("oh no, error!");
+
+
+        const { queryByTestId } = render(<ReadingModal isReading={true}
+            setReading={{} as Dispatch<SetStateAction<boolean>>}></ReadingModal>);
+
+        await waitFor(() => {
+            const warning = queryByTestId("reading__warning");
+            expect(warning).toBeInTheDocument();
+            expect(warning).toHaveTextContent("oh no, error!");
 
         });
 

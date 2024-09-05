@@ -66,6 +66,8 @@ describe("Flashing Page should", () => {
         await waitFor(
             () => {
                 expect(getByTestId("flashing__error")).toBeInTheDocument();
+                expect(getByTestId("flashing__error")).toHaveTextContent("oh no error");
+
             }
         )
 
