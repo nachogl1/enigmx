@@ -19,7 +19,7 @@ describe("Flashing Page should", () => {
     it('flash ntag', async () => {
         flashNtagMock.mockResolvedValue("");
 
-        const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+        const { getByText, getByTestId, queryByTestId } = render(<FlashingPage></FlashingPage>);
         expect(getByTestId("message-input")).toBeInTheDocument();
         expect(getByTestId("pk-input")).toBeInTheDocument();
         expect(getByText("FLASH")).toBeInTheDocument();
@@ -27,7 +27,6 @@ describe("Flashing Page should", () => {
         act(() => {
             fireEvent.change(getByTestId("message-input"), { target: { value: 'testMessage' } });
             fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
-            // fireEvent.click(getByText("FLASH"));
         });
 
         await waitFor(
@@ -44,6 +43,29 @@ describe("Flashing Page should", () => {
         await waitFor(
             () => {
                 expect(flashNtagMock).toHaveBeenCalledWith("testMessage");
+                expect(queryByTestId("flashing__error")).not.toBeInTheDocument();
+
+            }
+        )
+
+    });
+
+
+    it('show warning when errors out during flashing', async () => {
+        flashNtagMock.mockRejectedValue("oh no error");
+
+        const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+
+        act(() => {
+            fireEvent.change(getByTestId("message-input"), { target: { value: 'testMessage' } });
+            fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
+            fireEvent.click(getByText("FLASH"));
+        });
+
+
+        await waitFor(
+            () => {
+                expect(getByTestId("flashing__error")).toBeInTheDocument();
             }
         )
 
