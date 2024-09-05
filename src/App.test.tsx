@@ -2,6 +2,15 @@ import { render, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import App from './App';
 
+const isPlatformMock = vi.fn();
+
+vi.mock("@ionic/react", async () => {
+    const actual: Record<any, any> = await vi.importActual("@ionic/react")
+    return {
+        ...actual,
+        isPlatform: () => isPlatformMock(),
+    }
+});
 
 const nfcEnabledMock = vi.fn();
 vi.mock('@awesome-cordova-plugins/nfc', () => {
@@ -17,14 +26,37 @@ describe("App should", () => {
     describe("if env is", () => {
 
         it("test, show app, let me work", () => {
+            process.env.NODE_ENV = "test";
             const { queryByTestId } = render(<App></App>);
             expect(queryByTestId("nfc__warning")).not.toBeInTheDocument();
         });
 
-        it("development, show app, let me work", async () => {
+        it("development and browser (not hybrid), show app, let me work", async () => {
+            const { queryByTestId } = render(<App></App>);
+            process.env.NODE_ENV = "development";
+            isPlatformMock.mockReturnValue(false);
+            await waitFor(() => {
+                expect(queryByTestId("nfc__warning")).not.toBeInTheDocument();
+            });
+        });
+
+        it("development and phone (hybrid) and nfc available, treat like prod", async () => {
+            process.env.NODE_ENV = "development";
+            isPlatformMock.mockReturnValue(true);
+            nfcEnabledMock.mockResolvedValue(true);
             const { queryByTestId } = render(<App></App>);
             await waitFor(() => {
                 expect(queryByTestId("nfc__warning")).not.toBeInTheDocument();
+            });
+        });
+
+        it("development and phone (hybrid) and nfc not available, treat like prod", async () => {
+            process.env.NODE_ENV = "development";
+            isPlatformMock.mockReturnValue(true);
+            nfcEnabledMock.mockRejectedValue(false);
+            const { getByTestId } = render(<App></App>);
+            await waitFor(() => {
+                expect(getByTestId("nfc__warning")).toBeInTheDocument();
             });
         });
 

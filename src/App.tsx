@@ -1,4 +1,4 @@
-import { IonApp, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonRouterOutlet, IonTitle, IonToolbar, setupIonicReact } from '@ionic/react';
+import { IonApp, IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonRouterOutlet, IonTitle, IonToolbar, isPlatform, setupIonicReact } from '@ionic/react';
 import React, { useEffect, useState } from 'react';
 
 
@@ -39,7 +39,7 @@ const App: React.FC = () => {
     const [nfcEnabled, setNfcENabled] = useState<boolean>(true);
 
     useEffect(() => {
-        if (process.env.NODE_ENV !== "production") {
+        if (process.env.NODE_ENV !== "production" && !isPlatform("hybrid")) {
             return;
         }
 
