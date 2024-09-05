@@ -80,7 +80,7 @@ const App: React.FC = () => {
             </>}
 
             {
-                !nfcEnabled && <div className="alert alert-danger mt-2" data-testid="nfc__warning" role="alert">
+                !nfcEnabled && <div className="alert alert-danger m-5" data-testid="nfc__warning" role="alert">
                     NFC not enabled in this device
                 </div>}
 
