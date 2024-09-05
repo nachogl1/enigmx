@@ -41,7 +41,7 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
             </IonHeader>
             <IonContent className="ion-padding">
                 <div style={{ alignContent: "center", textAlign: "center" }}>
-                    {!readResult &&
+                    {(!readResult && !error) &&
                         <>
                             <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
                             <p>Reading, get close to your NTAG</p>
@@ -49,7 +49,7 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
                     }
 
-                    {readResult && <p>{JSON.stringify(readResult)}</p>}
+                    {(readResult && !error) && <p>{JSON.stringify(readResult)}</p>}
 
                     {error &&
                         <div className="alert alert-danger mt-2" data-testid="reading__warning" role="alert">

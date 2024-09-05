@@ -36,6 +36,9 @@ describe("Reading Modal should", () => {
             expect(readingMessage).not.toBeInTheDocument();
             expect(resultMessage).toBeInTheDocument();
 
+            const warning = queryByTestId("reading__warning");
+            expect(warning).not.toBeInTheDocument();
+
         });
 
     });
@@ -45,13 +48,20 @@ describe("Reading Modal should", () => {
         readerModeMock.mockRejectedValue("oh no, error!");
 
 
-        const { queryByTestId } = render(<ReadingModal isReading={true}
+        const { queryByTestId, getByTestId } = render(<ReadingModal isReading={true}
             setReading={{} as Dispatch<SetStateAction<boolean>>}></ReadingModal>);
 
         await waitFor(() => {
-            const warning = queryByTestId("reading__warning");
+            const warning = getByTestId("reading__warning");
             expect(warning).toBeInTheDocument();
             expect(warning).toHaveTextContent("oh no, error!");
+
+            const readingLoadingIcon = queryByTestId("reading__loading-icon");
+            const readingMessage = queryByTestId("Reading, get close to your NTAG");
+
+            expect(readingLoadingIcon).not.toBeInTheDocument();
+            expect(readingMessage).not.toBeInTheDocument();
+
 
         });
 
