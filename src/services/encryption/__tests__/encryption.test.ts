@@ -1,5 +1,5 @@
 import { describe, vi } from 'vitest';
-import { encryptMessage } from "../encryption";
+import { decryptMessage, encryptMessage } from "../encryption";
 
 
 const byteToTextMock = vi.fn();
@@ -16,10 +16,15 @@ vi.mock('crypto-js', () => {
 });
 
 describe("Encryption service should", () => {
-
     it("encrypt message", () => {
         encryptMock.mockReturnValue("encryptMessage");
-        const result = encryptMessage("testMessage", "tets-private-key");
+        const result = encryptMessage("testMessage", "test-private-key");
         expect(result).toBe("encryptMessage");
+    });
+
+    it("decrypt message", () => {
+        decryptMock.mockReturnValue("decryptedMessage");
+        const result = decryptMessage("encryptedPayload", "test-private-key");
+        expect(result).toBe("decryptedMessage");
     });
 });
