@@ -20,6 +20,10 @@ vi.mock('crypto-js', async () => {
 });
 
 describe("Encryption service should", () => {
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
     it("encrypt message", () => {
         encryptMock.mockReturnValue("encryptMessage");
         const result = encryptMessage("testMessage", "test-private-key");
@@ -31,5 +35,20 @@ describe("Encryption service should", () => {
         const result = decryptMessage("encryptedPayload", "test-private-key");
         expect(result).toBe("decryptedMessage");
     });
+
+    it("warns user if encryption process errors our ", () => {
+        const errorStub = new Error("testError");
+        encryptMock.mockReturnValue(errorStub);
+        const result = encryptMessage("encryptedPayload", "test-private-key");
+        expect(result).toEqual(errorStub);
+    });
+
+    it("warns user if decryption process errors our ", () => {
+        const errorStub = new Error("Decryption error");
+        decryptMock.mockImplementation(() => { throw new Error("whatever"); });
+        expect(() => decryptMessage("encryptedPayload", "test-private-key")).toThrow(/^Decryption error$/);
+    });
+
+
 
 });

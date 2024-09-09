@@ -6,7 +6,14 @@ export const encryptMessage = (payload: string, privateKey: string) => {
 }
 
 export const decryptMessage = (encryptPayload: string, privateKey: string) => {
-    return bytesToString(CryptoJS.AES.decrypt(encryptPayload, privateKey));
+    let decryptedBytes;
+    try {
+        decryptedBytes = CryptoJS.AES.decrypt(encryptPayload, privateKey)
+
+    } catch (error) {
+        throw new Error("Decryption error");
+    }
+    return bytesToString(decryptedBytes);
 }
 
 const bytesToString = (bytes: any) => {
