@@ -23,6 +23,7 @@ function DecryptDialog({ encryptedPayload, setError }: DecryptDialogProps) {
 
   return (
     <div
+      data-testid="readingModal__decryptDialog"
       style={{
         display: "flex",
         flexDirection: "column",
