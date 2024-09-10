@@ -1,6 +1,6 @@
-import { NfcTag } from "@awesome-cordova-plugins/nfc";
 import { IonButton, IonButtons, IonContent, IonHeader, IonModal, IonSpinner, IonToolbar } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { decryptMessage } from "../../../../services/encryption/encryption";
 import { readFromNtagV2 } from "../../../../services/readingV2/readingV2.service";
 
 interface ReadingModalProps {
@@ -10,13 +10,21 @@ interface ReadingModalProps {
 
 function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
-    const [readResult, setReadResult] = useState<NfcTag | null>(null);
+    const [readResult, setReadResult] = useState<string>("");
     const [error, setError] = useState<string>("");
+    const [pk, setPk] = useState<string>("");
+    const [result, setResult] = useState<string>("");
+
+    const decrypt = () => {
+        const f = decryptMessage(readResult, pk);
+        setResult(f);
+    };
 
     useEffect(() => {
         const read = async () => {
             setError("");
-            const readingResult = readFromNtagV2()
+
+            readFromNtagV2()
                 .then(
                     (readingResult) => {
                         setReadResult(readingResult);
@@ -49,7 +57,18 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
                     }
 
-                    {(readResult && !error) && <p>{JSON.stringify(readResult)}</p>}
+                    {(readResult && !error) && <div>{
+                        <div className="input-group mb-3"
+                            style={{ width: "80%", marginBottom: "5vh" }}>
+                            <input data-testid="pk-input" type="password" className="form-control" placeholder="Message" onChange={(e) => {
+                                setPk(e.target.value as string)
+                            }
+                            }></input>
+                            <IonButton onClick={() => { decrypt(); }} fill="outline">Decrypt</IonButton>
+                            {result && <p>{result}</p>}
+                        </div>
+
+                    }</div>}
 
                     {error &&
                         <div className="alert alert-danger mt-2" data-testid="reading__warning" role="alert">
