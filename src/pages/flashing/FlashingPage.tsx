@@ -14,7 +14,16 @@ const FlashingPage: React.FC = () => {
     setErrorMessage("")
     setLoading(true);
 
-    const encryptedMessage = JSON.stringify(encryptMessage(message, pk));
+    let encryptedMessageObject;
+    try {
+      encryptedMessageObject = encryptMessage(message, pk)
+    } catch (error) {
+      setErrorMessage((error as Error).message);
+      setLoading(false);
+      return;
+    }
+
+    const encryptedMessage = JSON.stringify(encryptedMessageObject);
 
     flashNtag(encryptedMessage)
       .catch((error) => {
@@ -50,7 +59,7 @@ const FlashingPage: React.FC = () => {
         {(!message || !pk) && <IonButton disabled fill="outline">FLASH</IonButton>}
 
         {errorMessage &&
-          <div className="alert alert-danger mt-2" data-testid="flashing__error" role="alert">
+          <div className="alert alert-danger mt-2" data-testid="error__message" role="alert">
             {errorMessage}
           </div>}
 
