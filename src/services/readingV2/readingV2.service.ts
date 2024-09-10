@@ -1,7 +1,7 @@
 import { NFC, NfcTag } from "@awesome-cordova-plugins/nfc";
 import { firstValueFrom } from "rxjs";
 
-const startOfRealEncryptedMessage = "U2Fsd";
+const START_OF_REAL_ENCRYPTED_MESSAGE = "U2Fsd";
 
 export const readFromNtagV2: () => Promise<string> = async () => {
   const ntagObject = await readFromNtag();
@@ -13,10 +13,10 @@ export const readFromNtagV2: () => Promise<string> = async () => {
 };
 
 const readFromNtag = async () => {
-  return firstValueFrom(NFC.readerMode(getPredefinedFlags()));
+  return firstValueFrom(NFC.readerMode(getPredefinedNFCFlags()));
 };
 
-const getPredefinedFlags = () => {
+const getPredefinedNFCFlags = () => {
   return (
     NFC.FLAG_READER_NFC_A |
     NFC.FLAG_READER_NFC_V |
@@ -42,7 +42,9 @@ const bytesToText = (payload: number[]): string => {
 };
 
 const removeLanguagePrefix = (payloadAsText: string) => {
-  const firstIndexOfRealMessage = payloadAsText.indexOf(startOfRealEncryptedMessage);
+  const firstIndexOfRealMessage = payloadAsText.indexOf(
+    START_OF_REAL_ENCRYPTED_MESSAGE
+  );
   const result = payloadAsText.substring(firstIndexOfRealMessage);
   return result;
 };
