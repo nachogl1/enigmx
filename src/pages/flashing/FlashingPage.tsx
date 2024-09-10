@@ -23,7 +23,7 @@ const FlashingPage: React.FC = () => {
       return;
     }
 
-    const encryptedMessage = JSON.stringify(encryptedMessageObject);
+    const encryptedMessage = encryptedMessageObject.toString();
 
     flashNtag(encryptedMessage)
       .catch((error) => {

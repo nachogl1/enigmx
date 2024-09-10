@@ -5,15 +5,16 @@ import FlashingPage from "../FlashingPage";
 
 const cipherParamsObjectStub = {
     message: "testMessageCyphered",
+    toString: () => JSON.stringify({ message: "testMessageCyphered" }),
 };
 const flashNtagMock = vi.fn();
 vi.mock('../../../services/flashing/flashing.service', () => ({
     flashNtag: (message: string) => flashNtagMock(message),
 }))
 
-const encryptmessageMock = vi.fn();
+const encryptMessageMock = vi.fn();
 vi.mock('../../../services/encryption/encryption', () => ({
-    encryptMessage: (encryptPayload: string, privateKey: string) => encryptmessageMock(),
+    encryptMessage: (encryptPayload: string, privateKey: string) => encryptMessageMock(encryptPayload, privateKey),
 }))
 
 describe("Flashing Page should", () => {
@@ -23,10 +24,10 @@ describe("Flashing Page should", () => {
     });
 
 
-    it('flash ntag', async () => {
+    it.only('flash ntag', async () => {
         flashNtagMock.mockResolvedValue("");
 
-        encryptmessageMock.mockReturnValue(cipherParamsObjectStub);
+        encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
 
         const { getByText, getByTestId, queryByTestId } = render(<FlashingPage></FlashingPage>);
         expect(getByTestId("message-input")).toBeInTheDocument();
@@ -84,7 +85,7 @@ describe("Flashing Page should", () => {
 
 
     it('show warning when errors out during encryption before flashing', async () => {
-        encryptmessageMock.mockImplementation((a:string, b:string) => {
+        encryptMessageMock.mockImplementation((a: string, b: string) => {
             throw new Error("Error when encrypting");
         });
 
@@ -130,7 +131,7 @@ describe("Flashing Page should", () => {
 
     it("show loading when flashing", async () => {
         flashNtagMock.mockResolvedValue("");
-        encryptmessageMock.mockReturnValue(cipherParamsObjectStub);
+        encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
 
         const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
 
