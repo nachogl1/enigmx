@@ -49,6 +49,15 @@ describe("Encryption service should", () => {
         expect(() => decryptMessage("encryptedPayload", "test-private-key")).toThrow(/^Decryption error$/);
     });
 
+    it("warns user if converting from bytes to string fails ", () => {
+
+        const encryptedObjectFakeError = {
+            toString: (encode: any) => { throw new Error("Parsing from bytes to text error") }
+        };
+
+        decryptMock.mockReturnValue(encryptedObjectFakeError);
+        expect(() => decryptMessage("encryptedPayload", "test-private-key")).toThrow(/^Parsing from bytes to text error$/);
+    });
 
 
 });
