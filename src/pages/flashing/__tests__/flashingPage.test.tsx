@@ -24,7 +24,7 @@ describe("Flashing Page should", () => {
     });
 
 
-    it.only('flash ntag', async () => {
+    it('flash ntag', async () => {
         flashNtagMock.mockResolvedValue("");
 
         encryptMessageMock.mockReturnValue(cipherParamsObjectStub);

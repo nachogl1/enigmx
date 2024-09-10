@@ -41,7 +41,7 @@ vi.mock("@awesome-cordova-plugins/nfc", () => {
   };
 });
 
-describe.only("Reading service should", () => {
+describe("Reading service should", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
