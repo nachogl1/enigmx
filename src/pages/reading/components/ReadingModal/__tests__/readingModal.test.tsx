@@ -20,7 +20,7 @@ describe("Reading Modal should", () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
-    it.skip('start reading when renders', async () => {
+    it('start reading when renders', async () => {
 
         readerModeMock.mockResolvedValue(nfcTag);
 

@@ -35,8 +35,8 @@ describe('Flashing service should', () => {
     
     it('flash payload', async () => {
         addNdefListenerMock.mockReturnValue(of("testObservable"));
-        writeMock.mockResolvedValue("testResultWrite");
         textRecordMock.mockReturnValue(ndefRecordStub);
+        writeMock.mockResolvedValue("testResultWrite");
 
         const result = await flashNtag("testData");
 
@@ -50,11 +50,13 @@ describe('Flashing service should', () => {
 
     it('fail if add ndef listener fails', async () => {
         addNdefListenerMock.mockReturnValue(throwError(() => "testErrorObservable"));
+
         expect(flashNtag("testData")).rejects.toThrow('testErrorObservable');
     });
 
     it('fail if create ndef record fails', async () => {
         addNdefListenerMock.mockReturnValue(of("testObservable"));
+        
         textRecordMock.mockImplementation(() => {
             throw new Error("testError");
         });
