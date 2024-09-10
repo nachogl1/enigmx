@@ -1,17 +1,24 @@
 import { IonButton } from "@ionic/react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { decryptMessage } from "../../../../services/encryption/encryption";
 
 interface DecryptDialogProps {
   encryptedPayload: string;
+  setError: Dispatch<SetStateAction<string>>;
 }
 
-function DecryptDialog({ encryptedPayload }: DecryptDialogProps) {
+function DecryptDialog({ encryptedPayload, setError }: DecryptDialogProps) {
   const [pk, setPk] = useState<string>("");
   const [decryptedMessage, setDecryptedMessage] = useState<string>("");
 
-  const decryptHandler = () => {
-    setDecryptedMessage(decryptMessage(encryptedPayload, pk));
+  const decryptHandler = async () => {
+    let decryptedMessage;
+    try {
+      decryptedMessage = decryptMessage(encryptedPayload, pk);
+    } catch (error) {
+      setError((error as Error).message);
+    }
+    setDecryptedMessage(decryptedMessage);
   };
 
   return (
@@ -27,7 +34,7 @@ function DecryptDialog({ encryptedPayload }: DecryptDialogProps) {
       }}
     >
       <input
-        data-testid="pk-input"
+        data-testid="pk__input"
         type="password"
         className="form-control mb-3"
         placeholder="Private Key"
@@ -37,6 +44,7 @@ function DecryptDialog({ encryptedPayload }: DecryptDialogProps) {
       ></input>
 
       <IonButton
+        data-testid="decypt__button"
         onClick={() => {
           decryptHandler();
         }}
