@@ -56,6 +56,7 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
           {encryptedReadResult && !error && (
             <DecryptDialog
+              setError={setError}
               encryptedPayload={encryptedReadResult}
             ></DecryptDialog>
           )}
