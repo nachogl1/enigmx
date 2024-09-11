@@ -1,153 +1,152 @@
 import { fireEvent, render, waitFor } from "@testing-library/react";
 import { act } from "react";
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from "vitest";
 import FlashingPage from "../FlashingPage";
 
 const cipherParamsObjectStub = {
-    message: "testMessageCyphered",
-    toString: () => JSON.stringify({ message: "testMessageCyphered" }),
+  message: "testMessageCyphered",
+  toString: () => JSON.stringify({ message: "testMessageCyphered" }),
 };
 
 const flashNtagMock = vi.fn();
-vi.mock('../../../services/flashing/flashing.service', () => ({
-    flashNtag: (message: string) => flashNtagMock(message),
-}))
+vi.mock("../../../services/flashing/flashing.service", () => ({
+  flashNtag: (message: string) => flashNtagMock(message),
+}));
 
 const encryptMessageMock = vi.fn();
-vi.mock('../../../services/encryption/encryption', () => ({
-    encryptMessage: (encryptPayload: string, privateKey: string) => encryptMessageMock(encryptPayload, privateKey),
-}))
+vi.mock("../../../services/encryption/encryption", () => ({
+  encryptMessage: (encryptPayload: string, privateKey: string) =>
+    encryptMessageMock(encryptPayload, privateKey),
+}));
 
 describe("Flashing Page should", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    beforeEach(() => {
-        vi.clearAllMocks();
+  it("flash ntag", async () => {
+    flashNtagMock.mockResolvedValue("");
+
+    encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
+
+    const { getByText, getByTestId, queryByTestId } = render(
+      <FlashingPage></FlashingPage>
+    );
+    expect(getByTestId("message-input")).toBeInTheDocument();
+    expect(getByTestId("pk-input")).toBeInTheDocument();
+    expect(getByText("FLASH")).toBeInTheDocument();
+
+    act(() => {
+      fireEvent.change(getByTestId("message-input"), {
+        target: { value: "testMessage" },
+      });
+      fireEvent.change(getByTestId("pk-input"), {
+        target: { value: "testPassword" },
+      });
     });
 
-
-    it('flash ntag', async () => {
-        flashNtagMock.mockResolvedValue("");
-
-        encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
-
-        const { getByText, getByTestId, queryByTestId } = render(<FlashingPage></FlashingPage>);
-        expect(getByTestId("message-input")).toBeInTheDocument();
-        expect(getByTestId("pk-input")).toBeInTheDocument();
-        expect(getByText("FLASH")).toBeInTheDocument();
-
-        act(() => {
-            fireEvent.change(getByTestId("message-input"), { target: { value: 'testMessage' } });
-            fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
-        });
-
-        await waitFor(
-            () => {
-                expect(getByTestId("message-input")).toHaveValue('testMessage');
-                expect(getByTestId("pk-input")).toHaveValue('testPassword');
-            }
-        )
-
-        act(() => {
-            fireEvent.click(getByText("FLASH"));
-        });
-
-        await waitFor(
-            () => {
-                expect(flashNtagMock).toHaveBeenCalledWith(JSON.stringify(cipherParamsObjectStub));
-                expect(queryByTestId("error__message")).not.toBeInTheDocument();
-
-            }
-        )
-
+    await waitFor(() => {
+      expect(getByTestId("message-input")).toHaveValue("testMessage");
+      expect(getByTestId("pk-input")).toHaveValue("testPassword");
     });
 
-
-    it('show warning when errors out during flashing', async () => {
-        flashNtagMock.mockRejectedValue("oh no error");
-
-        const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
-
-        act(() => {
-            fireEvent.change(getByTestId("message-input"), { target: { value: 'testMessage' } });
-            fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
-            fireEvent.click(getByText("FLASH"));
-        });
-
-
-        await waitFor(
-            () => {
-                expect(getByTestId("error__message")).toBeInTheDocument();
-                expect(getByTestId("error__message")).toHaveTextContent("oh no error");
-
-            }
-        )
-
+    act(() => {
+      fireEvent.click(getByText("FLASH"));
     });
 
+    await waitFor(() => {
+      expect(flashNtagMock).toHaveBeenCalledWith(
+        JSON.stringify(cipherParamsObjectStub)
+      );
+      expect(queryByTestId("error__message")).not.toBeInTheDocument();
+    });
+  });
 
-    it('show warning when errors out during encryption before flashing', async () => {
-        encryptMessageMock.mockImplementation((a: string, b: string) => {
-            throw new Error("Error when encrypting");
-        });
+  it("show warning when errors out during flashing", async () => {
+    flashNtagMock.mockRejectedValue("oh no error");
 
-        const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+    const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
 
-        act(() => {
-            fireEvent.change(getByTestId("message-input"), { target: { value: 'testMessage' } });
-            fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
-            fireEvent.click(getByText("FLASH"));
-        });
-
-
-        await waitFor(
-            () => {
-                expect(getByTestId("error__message")).toBeInTheDocument();
-                expect(getByTestId("error__message")).toHaveTextContent("Error when encrypting");
-
-            }
-        )
-
+    act(() => {
+      fireEvent.change(getByTestId("message-input"), {
+        target: { value: "testMessage" },
+      });
+      fireEvent.change(getByTestId("pk-input"), {
+        target: { value: "testPassword" },
+      });
+      fireEvent.click(getByText("FLASH"));
     });
 
-    it('flash button disabled if missing fields', async () => {
-        const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+    await waitFor(() => {
+      expect(getByTestId("error__message")).toBeInTheDocument();
+      expect(getByTestId("error__message")).toHaveTextContent("oh no error");
+    });
+  });
 
-        act(() => {
-            fireEvent.change(getByTestId("message-input"), { target: { value: '' } });
-            fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
-            fireEvent.click(getByText("FLASH"));
-            //programtic click triggers onClick even when button
-        });
-
-        expect(getByText("FLASH")).toBeDisabled();
-        expect(flashNtagMock).not.toHaveBeenCalled();
-
-
+  it("show warning when errors out during encryption before flashing", async () => {
+    encryptMessageMock.mockImplementation((a: string, b: string) => {
+      throw new Error("Error when encrypting");
     });
 
-    it("not show loading on landing in the screen", () => {
-        const { queryByTestId } = render(<FlashingPage></FlashingPage>);
-        expect(queryByTestId("flashing__loading")).not.toBeInTheDocument();
+    const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+
+    act(() => {
+      fireEvent.change(getByTestId("message-input"), {
+        target: { value: "testMessage" },
+      });
+      fireEvent.change(getByTestId("pk-input"), {
+        target: { value: "testPassword" },
+      });
+      fireEvent.click(getByText("FLASH"));
     });
 
-    it("show loading when flashing", async () => {
-        flashNtagMock.mockResolvedValue("");
-        encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
+    await waitFor(() => {
+      expect(getByTestId("error__message")).toBeInTheDocument();
+      expect(getByTestId("error__message")).toHaveTextContent(
+        "Error when encrypting"
+      );
+    });
+  });
 
-        const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+  it("flash button disabled if missing fields", async () => {
+    const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
 
-        act(() => {
-            fireEvent.change(getByTestId("message-input"), { target: { value: 'testMessage' } });
-            fireEvent.change(getByTestId("pk-input"), { target: { value: 'testPassword' } });
-            fireEvent.click(getByText("FLASH"));
-        });
-
-        await waitFor(
-            () => {
-                expect(getByTestId("flashing__loading")).toBeInTheDocument();
-            }
-        )
+    act(() => {
+      fireEvent.change(getByTestId("message-input"), { target: { value: "" } });
+      fireEvent.change(getByTestId("pk-input"), {
+        target: { value: "testPassword" },
+      });
+      fireEvent.click(getByText("FLASH"));
+      //programtic click triggers onClick even when button
     });
 
+    expect(getByText("FLASH")).toBeDisabled();
+    expect(flashNtagMock).not.toHaveBeenCalled();
+  });
+
+  it("not show loading on landing in the screen", () => {
+    const { queryByTestId } = render(<FlashingPage></FlashingPage>);
+    expect(queryByTestId("flashing__loading")).not.toBeInTheDocument();
+  });
+
+  it.only("show loading when flashing", async () => {
+    flashNtagMock.mockResolvedValue("");
+    encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
+
+    const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+
+    act(() => {
+      fireEvent.change(getByTestId("message-input"), {
+        target: { value: "testMessage" },
+      });
+      fireEvent.change(getByTestId("pk-input"), {
+        target: { value: "testPassword" },
+      });
+      fireEvent.click(getByText("FLASH"));
+    });
+
+    await waitFor(() => {
+      expect(getByTestId("flashing__loading")).toBeInTheDocument();
+    });
+  });
 });
-
