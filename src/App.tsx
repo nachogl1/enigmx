@@ -1,15 +1,15 @@
 import {
-    IonApp,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonMenuButton,
-    IonPage,
-    IonRouterOutlet,
-    IonTitle,
-    IonToolbar,
-    isPlatform,
-    setupIonicReact,
+  IonApp,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonMenuButton,
+  IonPage,
+  IonRouterOutlet,
+  IonTitle,
+  IonToolbar,
+  isPlatform,
+  setupIonicReact,
 } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 
@@ -40,7 +40,6 @@ import { Route } from "react-router";
 import SideMenu from "./components/side-menu/sideMenu";
 import FlashingPage from "./pages/flashing/FlashingPage";
 import ReadingPage from "./pages/reading/ReadingPage";
-import DecryptDialog from "./pages/reading/components/decryptDialog/decryptDialog";
 
 setupIonicReact();
 
@@ -84,8 +83,7 @@ const App: React.FC = () => {
                     <FlashingPage />
                   </Route>
                   <Route exact path="/reading">
-                    {/* <ReadingPage /> */}
-                    <DecryptDialog encryptedPayload="U2FsdGVkX1891+OcRh6TL7GEetS4f2DGAu6UxEYX6es="></DecryptDialog>
+                    <ReadingPage />
                   </Route>
                   <Route exact path="/">
                     <ReadingPage />

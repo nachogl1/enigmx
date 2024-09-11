@@ -7,6 +7,7 @@ const cipherParamsObjectStub = {
     message: "testMessageCyphered",
     toString: () => JSON.stringify({ message: "testMessageCyphered" }),
 };
+
 const flashNtagMock = vi.fn();
 vi.mock('../../../services/flashing/flashing.service', () => ({
     flashNtag: (message: string) => flashNtagMock(message),
