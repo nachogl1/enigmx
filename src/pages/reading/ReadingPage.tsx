@@ -5,8 +5,6 @@ import ReadingModal from "./components/ReadingModal/ReadingModal";
 const ReadingPage: React.FC = () => {
   const [isReading, setReading] = useState(false);
 
-  console.info("banana", isReading);
-
   return (
     <div
       style={{ height: "100%", alignContent: "center", textAlign: "center" }}
