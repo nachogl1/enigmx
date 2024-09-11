@@ -129,7 +129,7 @@ describe("Flashing Page should", () => {
     expect(queryByTestId("flashing__loading")).not.toBeInTheDocument();
   });
 
-  it.only("show loading when flashing", async () => {
+  it("show loading when flashing", async () => {
     flashNtagMock.mockResolvedValue("");
     encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
 

@@ -42,7 +42,7 @@ function FlashingModal({
 
     flashNtag(encryptedMessage)
       .catch((error) => {
-        setError(error);
+        setError((error as Error).message);
       })
       .finally(() => {
         setLoadingFlashing(false);
