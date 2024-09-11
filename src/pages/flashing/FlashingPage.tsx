@@ -1,7 +1,5 @@
 import { IonButton } from "@ionic/react";
 import React, { useState } from "react";
-import { encryptMessage } from "../../services/encryption/encryption";
-import { flashNtag } from "../../services/flashing/flashing.service";
 import FlashingModal from "./components/flashingModal/flashingModal";
 
 const FlashingPage: React.FC = () => {
@@ -13,25 +11,6 @@ const FlashingPage: React.FC = () => {
   const flashHandler = () => {
     setErrorMessage("");
     setLoading(true);
-
-    let encryptedMessageObject;
-    try {
-      encryptedMessageObject = encryptMessage(message, pk);
-    } catch (error) {
-      setErrorMessage((error as Error).message);
-      setLoading(false);
-      return;
-    }
-
-    const encryptedMessage = encryptedMessageObject.toString();
-
-    flashNtag(encryptedMessage)
-      .catch((error) => {
-        setErrorMessage(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
   };
 
   return (
@@ -107,8 +86,11 @@ const FlashingPage: React.FC = () => {
 
       {loading && (
         <FlashingModal
-          isFlashing={loading}
-          setFlashing={setLoading}
+          setError={setErrorMessage}
+          isLoadingFlashing={loading}
+          message={message}
+          pk={pk}
+          setLoadingFlashing={setLoading}
         ></FlashingModal>
       )}
     </div>

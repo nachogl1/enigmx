@@ -7,22 +7,60 @@ import {
     IonSpinner,
     IonToolbar,
 } from "@ionic/react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
+import { encryptMessage } from "../../../../services/encryption/encryption";
+import { flashNtag } from "../../../../services/flashing/flashing.service";
 
 interface FlashingModalProps {}
 
 interface FlashingModalProps {
-  isFlashing: boolean;
-  setFlashing: Dispatch<SetStateAction<boolean>>;
+  isLoadingFlashing: boolean;
+  setLoadingFlashing: Dispatch<SetStateAction<boolean>>;
+  setError: Dispatch<SetStateAction<string>>;
+  message: string;
+  pk: string;
 }
 
-function FlashingModal({ isFlashing, setFlashing }: FlashingModalProps) {
+function FlashingModal({
+  isLoadingFlashing,
+  setLoadingFlashing,
+  setError,
+  message,
+  pk,
+}: FlashingModalProps) {
+  const flashHandler = () => {
+    let encryptedMessageObject;
+    try {
+      encryptedMessageObject = encryptMessage(message, pk);
+    } catch (error) {
+      setError((error as Error).message);
+      setLoadingFlashing(false);
+      return;
+    }
+
+    const encryptedMessage = encryptedMessageObject.toString();
+
+    flashNtag(encryptedMessage)
+      .catch((error) => {
+        setError(error);
+      })
+      .finally(() => {
+        setLoadingFlashing(false);
+      });
+  };
+
+  useEffect(() => {
+    flashHandler();
+  });
+
   return (
-    <IonModal data-testid="flashing__loading-modal" isOpen={isFlashing}>
+    <IonModal data-testid="flashing__loading-modal" isOpen={isLoadingFlashing}>
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end">
-            <IonButton onClick={() => setFlashing(false)}>Close</IonButton>
+            <IonButton onClick={() => setLoadingFlashing(false)}>
+              Close
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
