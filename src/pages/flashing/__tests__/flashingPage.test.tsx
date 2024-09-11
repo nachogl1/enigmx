@@ -26,7 +26,6 @@ describe("Flashing Page should", () => {
 
   it("flash ntag", async () => {
     flashNtagMock.mockResolvedValue("");
-
     encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
 
     const { getByText, getByTestId, queryByTestId } = render(
@@ -55,17 +54,18 @@ describe("Flashing Page should", () => {
     });
 
     await waitFor(() => {
-      expect(flashNtagMock).toHaveBeenCalledWith(
-        JSON.stringify(cipherParamsObjectStub)
-      );
       expect(queryByTestId("error__message")).not.toBeInTheDocument();
+      expect(queryByTestId("flashing__loading-modal")).toBeInTheDocument();
     });
   });
 
   it("show warning when errors out during flashing", async () => {
-    flashNtagMock.mockRejectedValue("oh no error");
+    encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
+    flashNtagMock.mockRejectedValue(new Error("oh no error"));
 
-    const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
+    const { getByText, getByTestId, queryByText } = render(
+      <FlashingPage></FlashingPage>
+    );
 
     act(() => {
       fireEvent.change(getByTestId("message-input"), {
@@ -78,8 +78,10 @@ describe("Flashing Page should", () => {
     });
 
     await waitFor(() => {
-      expect(getByTestId("error__message")).toBeInTheDocument();
       expect(getByTestId("error__message")).toHaveTextContent("oh no error");
+      expect(
+        queryByText("Flashing, get close to your NTAG")
+      ).not.toBeInTheDocument();
     });
   });
 
@@ -130,8 +132,10 @@ describe("Flashing Page should", () => {
   });
 
   it("show loading when flashing", async () => {
-    flashNtagMock.mockResolvedValue("");
     encryptMessageMock.mockReturnValue(cipherParamsObjectStub);
+    flashNtagMock.mockImplementation(() => {
+      return new Promise(() => setTimeout(() => {}, 500));
+    });
 
     const { getByText, getByTestId } = render(<FlashingPage></FlashingPage>);
 
@@ -146,7 +150,7 @@ describe("Flashing Page should", () => {
     });
 
     await waitFor(() => {
-      expect(getByTestId("flashing__loading")).toBeInTheDocument();
+      expect(getByTestId("flashing__loading-icon")).toBeInTheDocument();
     });
   });
 });

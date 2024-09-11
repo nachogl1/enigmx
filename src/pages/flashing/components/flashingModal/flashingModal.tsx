@@ -1,11 +1,11 @@
 import {
-    IonButton,
-    IonButtons,
-    IonContent,
-    IonHeader,
-    IonModal,
-    IonSpinner,
-    IonToolbar,
+  IonButton,
+  IonButtons,
+  IonContent,
+  IonHeader,
+  IonModal,
+  IonSpinner,
+  IonToolbar,
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { encryptMessage } from "../../../../services/encryption/encryption";
