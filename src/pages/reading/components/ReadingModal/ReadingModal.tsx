@@ -28,7 +28,7 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
         setEncryptedReadResult(readingResult);
       })
       .catch((error) => {
-        setError(error);
+        setError((error as Error).message);
       });
   };
 

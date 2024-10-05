@@ -28,8 +28,8 @@ const getPredefinedNFCFlags = () => {
 const extractPayloadFrom = (ntag: NfcTag): number[] => {
   const payload = ntag.ndefMessage?.pop()?.payload;
 
-  if (!payload || payload?.length < 1) {
-    throw new Error("Encrypted payload was not valid");
+  if (!payload) {
+    throw new Error("Encrypted payload was not valid or empty");
   }
 
   return payload;

@@ -40,7 +40,7 @@ describe("Reading Modal should", () => {
   });
 
   it("show warning if error occurs", async () => {
-    readerModeMock.mockRejectedValue("oh no, error!");
+    readerModeMock.mockRejectedValue(new Error("oh no, error!"));
 
     const { queryByTestId, getByTestId } = render(
       <ReadingModal
