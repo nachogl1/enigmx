@@ -59,15 +59,14 @@ describe("Reading service should", () => {
     );
   });
 
-  it.only.each([[],undefined])(
-    "fail if payload is not valid",
+  it.each([[], undefined])(
+    "fail if ndefMessage is not valid",
     async (ndeMessageValue) => {
-      
       nfcTag = {
         ...nfcTag,
         ndefMessage: ndeMessageValue,
       };
-      
+
       readerModeMock = of(nfcTag);
 
       await expect(async () => await readFromNtagV2()).rejects.toThrowError(
@@ -75,4 +74,24 @@ describe("Reading service should", () => {
       );
     }
   );
+
+  it("fail if first payload is not valid", async () => {
+    nfcTag = {
+      ...nfcTag,
+      ndefMessage: [
+        {
+          payload: [],
+          id:[1],
+          tnf:1,
+          type:[1]
+        },
+      ],
+    };
+
+    readerModeMock = of(nfcTag);
+
+    await expect(async () => await readFromNtagV2()).rejects.toThrowError(
+      /^Encrypted payload was not valid or empty$/
+    );
+  });
 });
