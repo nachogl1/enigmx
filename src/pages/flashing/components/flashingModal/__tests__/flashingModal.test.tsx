@@ -87,7 +87,7 @@ describe("Flashing modal should", () => {
     });
   });
 
-  it.only("foo", async () => {
+  it("no break when observable ends with takeUntil before any element arrives", async () => {
     encryptMessageMock.mockReturnValue(encryptedMessageObjectStub);
     flashNtagMock.mockRejectedValue(new Error("No elements in sequence"));
 
