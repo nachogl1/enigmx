@@ -17,6 +17,8 @@ interface FlashingModalProps {
   isLoadingFlashing: boolean;
   setLoadingFlashing: Dispatch<SetStateAction<boolean>>;
   setError: Dispatch<SetStateAction<string>>;
+  setPk: Dispatch<SetStateAction<string>>;
+  setMessage: Dispatch<SetStateAction<string>>;
   message: string;
   pk: string;
 }
@@ -25,9 +27,16 @@ function FlashingModal({
   isLoadingFlashing,
   setLoadingFlashing,
   setError,
+  setPk,
+  setMessage,
   message,
   pk,
 }: FlashingModalProps) {
+  const cleanFields = () => {
+    setPk("");
+    setMessage("");
+  };
+
   const flashHandler = () => {
     let encryptedMessageObject;
     try {
@@ -46,6 +55,7 @@ function FlashingModal({
       })
       .finally(() => {
         setLoadingFlashing(false);
+        cleanFields();
       });
   };
 
@@ -58,7 +68,12 @@ function FlashingModal({
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end">
-            <IonButton onClick={() => setLoadingFlashing(false)}>
+            <IonButton
+              onClick={() => {
+                setLoadingFlashing(false);
+                cleanFields();
+              }}
+            >
               Close
             </IonButton>
           </IonButtons>

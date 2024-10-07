@@ -86,6 +86,8 @@ const FlashingPage: React.FC = () => {
 
       {loading && (
         <FlashingModal
+          setPk={setPk}
+          setMessage={setMessage}
           setError={setErrorMessage}
           isLoadingFlashing={loading}
           message={message}
