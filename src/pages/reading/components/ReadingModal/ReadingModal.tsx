@@ -1,10 +1,6 @@
 import {
   IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonSpinner,
-  IonToolbar
+  IonSpinner
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
@@ -40,9 +36,11 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
 
   return (
     <div data-testid="reading__loading-modal">
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="end">
+      <div style={{ alignContent: "center", textAlign: "center" }}>
+        {!encryptedReadResult && !error && (
+          <>
+            <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
+            <p>Reading, get close to your NTAG</p>
             <IonButton
               onClick={() => {
                 setReading(false);
@@ -51,36 +49,26 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
             >
               Close
             </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        <div style={{ alignContent: "center", textAlign: "center" }}>
-          {!encryptedReadResult && !error && (
-            <>
-              <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
-              <p>Reading, get close to your NTAG</p>
-            </>
-          )}
+          </>
+        )}
 
-          {encryptedReadResult && !error && (
-            <DecryptDialog
-              setError={setError}
-              encryptedPayload={encryptedReadResult}
-            ></DecryptDialog>
-          )}
+        {encryptedReadResult && !error && (
+          <DecryptDialog
+            setError={setError}
+            encryptedPayload={encryptedReadResult}
+          ></DecryptDialog>
+        )}
 
-          {error && (
-            <div
-              className="alert alert-danger mt-2"
-              data-testid="reading__warning"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
-        </div>
-      </IonContent>
+        {error && (
+          <div
+            className="alert alert-danger mt-2"
+            data-testid="reading__warning"
+            role="alert"
+          >
+            {error}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
