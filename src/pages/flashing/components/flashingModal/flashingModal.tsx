@@ -10,7 +10,7 @@ import {
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { encryptMessage } from "../../../../services/encryption/encryption";
 import {
-  closeConnection,
+  stopFlashing,
   flashNtag,
 } from "../../../../services/flashing/flashing.service";
 
@@ -35,11 +35,11 @@ function FlashingModal({
   message,
   pk,
 }: FlashingModalProps) {
-  const closeHandler: () => void = async () => {
+  const closeHandler: () => void = () => {
     setLoadingFlashing(false);
     cleanFields();
     try {
-      await closeConnection();
+      stopFlashing();
     } catch (error) {
       setError((error as Error).message);
     }

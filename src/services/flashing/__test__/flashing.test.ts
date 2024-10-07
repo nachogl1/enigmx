@@ -1,7 +1,11 @@
 import { NdefRecord } from "@awesome-cordova-plugins/nfc";
 import { of, throwError } from "rxjs";
 import { describe, vi } from "vitest";
-import { closeConnection, flashNtag } from "../flashing.service";
+import {
+    stopFlashing,
+    flashNtag,
+    getIsNDEFListenerOn,
+} from "../flashing.service";
 
 const ndefRecordStub: NdefRecord = {
   id: [1],
@@ -13,13 +17,11 @@ const ndefRecordStub: NdefRecord = {
 const addNdefListenerMock = vi.fn();
 const writeMock = vi.fn();
 const textRecordMock = vi.fn();
-const closeMock = vi.fn();
 vi.mock("@awesome-cordova-plugins/nfc", () => {
   return {
     NFC: {
       addNdefListener: () => addNdefListenerMock(),
       write: (ndefRecord: string[]) => writeMock(ndefRecord),
-      close: () => closeMock(),
     },
     Ndef: {
       textRecord: (data: string) => textRecordMock(data),
@@ -33,6 +35,8 @@ describe("Flashing service should", () => {
   });
 
   it("flash payload", async () => {
+    expect(getIsNDEFListenerOn()).toBeFalsy();
+
     addNdefListenerMock.mockReturnValue(of("testObservable"));
     textRecordMock.mockReturnValue(ndefRecordStub);
     writeMock.mockResolvedValue("testResultWrite");
@@ -45,6 +49,7 @@ describe("Flashing service should", () => {
     expect(writeMock).toHaveBeenCalledTimes(1);
     expect(writeMock).toHaveBeenCalledWith([ndefRecordStub]);
     expect(result).toBe("testResultWrite");
+    expect(getIsNDEFListenerOn()).toBeFalsy();
   });
 
   it("fail if add ndef listener fails", async () => {
@@ -53,6 +58,7 @@ describe("Flashing service should", () => {
     );
 
     expect(flashNtag("testData")).rejects.toThrow("testErrorObservable");
+    expect(getIsNDEFListenerOn()).toBeFalsy();
   });
 
   it("fail if create ndef record fails", async () => {
@@ -63,6 +69,7 @@ describe("Flashing service should", () => {
     });
 
     expect(flashNtag("testData")).rejects.toThrow("testError");
+    expect(getIsNDEFListenerOn()).toBeFalsy();
   });
 
   it("fail write ndef record fails", async () => {
@@ -71,13 +78,11 @@ describe("Flashing service should", () => {
     writeMock.mockRejectedValue("testError");
 
     expect(flashNtag("testData")).rejects.toThrow("testError");
+    expect(getIsNDEFListenerOn()).toBeFalsy();
   });
 
   it("stop nfc connection if asked by service", async () => {
-    closeMock.mockReturnValue("");
-
-    const result = await closeConnection();
-
-    expect(closeMock).toHaveBeenCalledTimes(1);
+    stopFlashing();
+    expect(getIsNDEFListenerOn()).toBeFalsy();
   });
 });

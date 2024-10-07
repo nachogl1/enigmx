@@ -14,10 +14,10 @@ vi.mock("../../../../../services/encryption/encryption", () => ({
 }));
 
 const flashNtagMock = vi.fn();
-const closeMock = vi.fn();
+const stopFlashingMock = vi.fn();
 vi.mock("../../../../../services/flashing/flashing.service", () => ({
   flashNtag: (message: string) => flashNtagMock(message),
-  closeConnection: () => closeMock(),
+  stopFlashing: () => stopFlashingMock(),
 }));
 
 describe("Flashing modal should", () => {
@@ -199,7 +199,7 @@ describe("Flashing modal should", () => {
     await waitFor(() => {
       const buttonClose = getByText("Close");
       fireEvent.click(buttonClose);
-      expect(closeMock).toHaveBeenCalled();
+      expect(stopFlashingMock).toHaveBeenCalled();
     });
   });
 });
