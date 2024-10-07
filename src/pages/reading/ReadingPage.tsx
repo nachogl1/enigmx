@@ -16,7 +16,6 @@ const ReadingPage: React.FC = () => {
       )}
       {isReading && (
         <ReadingModal
-          isReading={isReading}
           setReading={setReading}
         ></ReadingModal>
       )}

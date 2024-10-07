@@ -23,7 +23,6 @@ describe("Reading Modal should", () => {
 
     const { getByTestId, queryByTestId } = render(
       <ReadingModal
-        isReading={true}
         setReading={{} as Dispatch<SetStateAction<boolean>>}
       ></ReadingModal>
     );
@@ -46,7 +45,6 @@ describe("Reading Modal should", () => {
 
     const { queryByTestId, getByTestId } = render(
       <ReadingModal
-        isReading={true}
         setReading={{} as Dispatch<SetStateAction<boolean>>}
       ></ReadingModal>
     );
@@ -71,10 +69,7 @@ describe("Reading Modal should", () => {
     });
 
     const { findByText } = render(
-      <ReadingModal
-        isReading={true}
-        setReading={vi.fn()}
-      ></ReadingModal>
+      <ReadingModal setReading={vi.fn()}></ReadingModal>
     );
 
     await waitFor(async () => {

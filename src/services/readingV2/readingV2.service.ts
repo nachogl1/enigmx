@@ -3,7 +3,6 @@ import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 const START_OF_REAL_ENCRYPTED_MESSAGE = "U2Fsd";
 const readingSubject = new Subject<boolean>();
-let isReadingNDEFListenerOn = false;
 
 export const readFromNtagV2: () => Promise<string> = async () => {
   const ntagObject = await readFromNtag();
@@ -18,16 +17,12 @@ export const closeReadingSession = () => {
   readingSubject.next(false);
 };
 
-export const getIsReadingNDEFListenerOn: () => boolean = () => {
-  return isReadingNDEFListenerOn;
-};
 
 const readFromNtag = async () => {
-  isReadingNDEFListenerOn = true;
   return firstValueFrom(
+    //todo: issue testing the stop condition
     NFC.readerMode(getPredefinedNFCFlags()).pipe(takeUntil(readingSubject))
   ).finally(() => {
-    isReadingNDEFListenerOn = false;
   });
 };
 

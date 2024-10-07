@@ -1,11 +1,7 @@
 import { NfcTag } from "@awesome-cordova-plugins/nfc";
 import { Observable, of, throwError } from "rxjs";
 import { describe, expect, it, vi } from "vitest";
-import {
-  closeReadingSession,
-  getIsReadingNDEFListenerOn,
-  readFromNtagV2,
-} from "../readingV2.service";
+import { readFromNtagV2 } from "../readingV2.service";
 
 const payloadAsText = "U2FsdGVkX1891+OcRh6TL7GEetS4f2DGAu6UxEYX6es=";
 
@@ -51,10 +47,8 @@ describe("Reading service should", () => {
   });
 
   it("return the read value", async () => {
-    expect(getIsReadingNDEFListenerOn()).toBeFalsy();
     const result = await readFromNtagV2();
     expect(result).toBe(payloadAsText);
-    expect(getIsReadingNDEFListenerOn()).toBeFalsy();
   });
 
   it("fail if read from ntag fails", async () => {
@@ -63,7 +57,6 @@ describe("Reading service should", () => {
     await expect(async () => await readFromNtagV2()).rejects.toThrowError(
       /^NFC Reading failed$/
     );
-    expect(getIsReadingNDEFListenerOn()).toBeFalsy();
   });
 
   it.each([[], undefined])(
@@ -79,7 +72,6 @@ describe("Reading service should", () => {
       await expect(async () => await readFromNtagV2()).rejects.toThrowError(
         /^Encrypted payload was not valid or empty$/
       );
-      expect(getIsReadingNDEFListenerOn()).toBeFalsy();
     }
   );
 
@@ -101,11 +93,5 @@ describe("Reading service should", () => {
     await expect(async () => await readFromNtagV2()).rejects.toThrowError(
       /^Encrypted payload was not valid or empty$/
     );
-    expect(getIsReadingNDEFListenerOn()).toBeFalsy();
-  });
-
-  it("close reading connection", () => {
-    closeReadingSession();
-    expect(getIsReadingNDEFListenerOn()).toBeFalsy();
   });
 });

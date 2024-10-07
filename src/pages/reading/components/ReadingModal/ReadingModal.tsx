@@ -7,11 +7,10 @@ import {
 import DecryptDialog from "../decryptDialog/decryptDialog";
 
 interface ReadingModalProps {
-  isReading: boolean;
   setReading: Dispatch<SetStateAction<boolean>>;
 }
 
-function ReadingModal({ isReading, setReading }: ReadingModalProps) {
+function ReadingModal({ setReading }: ReadingModalProps) {
   const [encryptedReadResult, setEncryptedReadResult] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -32,7 +31,9 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
   }, []);
 
   return (
-    <div data-testid="reading__loading-modal" style={{height:"100%",display:"flex", flexDirection:"column", padding:"5%"}}>
+    <div data-testid="reading__loading-modal"
+     style={{height:"100%",display:"flex", flexDirection:"column", padding:"5%"}}>
+      
       <div style={{ alignContent: "center", textAlign: "center" }}>
         {!encryptedReadResult && !error && (
           <>
