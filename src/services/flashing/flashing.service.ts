@@ -11,4 +11,7 @@ export const flashNtag: (data: string) => Promise<any> = async (data: string) =>
     );
 };
 
+export const closeConnection: () => Promise<any> = async () => {
+    return NFC.close();
+};
 

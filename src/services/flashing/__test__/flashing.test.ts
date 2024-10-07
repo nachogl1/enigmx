@@ -1,79 +1,83 @@
 import { NdefRecord } from "@awesome-cordova-plugins/nfc";
 import { of, throwError } from "rxjs";
-import { describe, vi } from 'vitest';
-import { flashNtag } from '../flashing.service';
-
+import { describe, vi } from "vitest";
+import { closeConnection, flashNtag } from "../flashing.service";
 
 const ndefRecordStub: NdefRecord = {
-    id: [1],
-    payload: [1],
-    tnf: 1,
-    type: [1],
+  id: [1],
+  payload: [1],
+  tnf: 1,
+  type: [1],
 };
 
 const addNdefListenerMock = vi.fn();
 const writeMock = vi.fn();
 const textRecordMock = vi.fn();
-vi.mock('@awesome-cordova-plugins/nfc', () => {
-    return {
-        NFC: {
-            addNdefListener: () => addNdefListenerMock(),
-            write: (ndefRecord: string[]) => writeMock(ndefRecord),
-        },
-        Ndef: {
-            textRecord: (data: string) => textRecordMock(data),
-        }
-    }
+const closeMock = vi.fn();
+vi.mock("@awesome-cordova-plugins/nfc", () => {
+  return {
+    NFC: {
+      addNdefListener: () => addNdefListenerMock(),
+      write: (ndefRecord: string[]) => writeMock(ndefRecord),
+      close: () => closeMock(),
+    },
+    Ndef: {
+      textRecord: (data: string) => textRecordMock(data),
+    },
+  };
 });
 
-describe('Flashing service should', () => {
+describe("Flashing service should", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
 
-    beforeEach(()=>{
-        vi.clearAllMocks();
+  it("flash payload", async () => {
+    addNdefListenerMock.mockReturnValue(of("testObservable"));
+    textRecordMock.mockReturnValue(ndefRecordStub);
+    writeMock.mockResolvedValue("testResultWrite");
+
+    const result = await flashNtag("testData");
+
+    expect(addNdefListenerMock).toHaveBeenCalledTimes(1);
+    expect(textRecordMock).toHaveBeenCalledWith("testData");
+    expect(textRecordMock).toHaveBeenCalledTimes(1);
+    expect(writeMock).toHaveBeenCalledTimes(1);
+    expect(writeMock).toHaveBeenCalledWith([ndefRecordStub]);
+    expect(result).toBe("testResultWrite");
+  });
+
+  it("fail if add ndef listener fails", async () => {
+    addNdefListenerMock.mockReturnValue(
+      throwError(() => "testErrorObservable")
+    );
+
+    expect(flashNtag("testData")).rejects.toThrow("testErrorObservable");
+  });
+
+  it("fail if create ndef record fails", async () => {
+    addNdefListenerMock.mockReturnValue(of("testObservable"));
+
+    textRecordMock.mockImplementation(() => {
+      throw new Error("testError");
     });
 
-    
-    it('flash payload', async () => {
-        addNdefListenerMock.mockReturnValue(of("testObservable"));
-        textRecordMock.mockReturnValue(ndefRecordStub);
-        writeMock.mockResolvedValue("testResultWrite");
+    expect(flashNtag("testData")).rejects.toThrow("testError");
+  });
 
-        const result = await flashNtag("testData");
+  it("fail write ndef record fails", async () => {
+    addNdefListenerMock.mockReturnValue(of("testObservable"));
+    textRecordMock.mockReturnValue(ndefRecordStub);
+    writeMock.mockRejectedValue("testError");
 
-        expect(addNdefListenerMock).toHaveBeenCalledTimes(1);
-        expect(textRecordMock).toHaveBeenCalledWith("testData")
-        expect(textRecordMock).toHaveBeenCalledTimes(1);
-        expect(writeMock).toHaveBeenCalledTimes(1);
-        expect(writeMock).toHaveBeenCalledWith([ndefRecordStub]);
-        expect(result).toBe("testResultWrite");
-    });
+    expect(flashNtag("testData")).rejects.toThrow("testError");
+  });
 
-    it('fail if add ndef listener fails', async () => {
-        addNdefListenerMock.mockReturnValue(throwError(() => "testErrorObservable"));
+  it("stop nfc connection if asked by service", async () => {
+    closeMock.mockReturnValue("");
 
-        expect(flashNtag("testData")).rejects.toThrow('testErrorObservable');
-    });
+    const result = await closeConnection();
 
-    it('fail if create ndef record fails', async () => {
-        addNdefListenerMock.mockReturnValue(of("testObservable"));
-        
-        textRecordMock.mockImplementation(() => {
-            throw new Error("testError");
-        });
-
-        expect(flashNtag("testData")).rejects.toThrow("testError");
-    });
-
-    it('fail write ndef record fails', async () => {
-        addNdefListenerMock.mockReturnValue(of("testObservable"));
-        textRecordMock.mockReturnValue(ndefRecordStub);
-        writeMock.mockRejectedValue("testError");
-
-
-        expect(flashNtag("testData")).rejects.toThrow("testError");
-    });
-
-
-
+    expect(closeMock).toHaveBeenCalledTimes(1);
+  });
 });
-
