@@ -3,13 +3,16 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonModal,
+  IonPage,
   IonSpinner,
   IonToolbar,
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { encryptMessage } from "../../../../services/encryption/encryption";
-import { flashNtag } from "../../../../services/flashing/flashing.service";
+import {
+  closeConnection,
+  flashNtag,
+} from "../../../../services/flashing/flashing.service";
 
 interface FlashingModalProps {}
 
@@ -32,6 +35,16 @@ function FlashingModal({
   message,
   pk,
 }: FlashingModalProps) {
+  const closeHandler: () => void = async () => {
+    setLoadingFlashing(false);
+    cleanFields();
+    try {
+      await closeConnection();
+    } catch (error) {
+      setError((error as Error).message);
+    }
+  };
+
   const cleanFields = () => {
     setPk("");
     setMessage("");
@@ -64,30 +77,31 @@ function FlashingModal({
   });
 
   return (
-    <IonModal data-testid="flashing__loading-modal" isOpen={isLoadingFlashing}>
-      <IonHeader>
-        <IonToolbar>
-          <IonButtons slot="end">
-            <IonButton
-              onClick={() => {
-                setLoadingFlashing(false);
-                cleanFields();
-              }}
-            >
-              Close
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-      <IonContent className="ion-padding">
-        <div style={{ alignContent: "center", textAlign: "center" }}>
-          <>
-            <IonSpinner data-testid="flashing__loading-icon"></IonSpinner>
-            <p>Flashing, get close to your NTAG</p>
-          </>
-        </div>
-      </IonContent>
-    </IonModal>
+    isLoadingFlashing && (
+      <IonPage data-testid="flashing__loading-modal">
+        <IonHeader>
+          <IonToolbar>
+            <IonButtons slot="end">
+              <IonButton
+                onClick={() => {
+                  closeHandler();
+                }}
+              >
+                Close
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding">
+          <div style={{ alignContent: "center", textAlign: "center" }}>
+            <>
+              <IonSpinner data-testid="flashing__loading-icon"></IonSpinner>
+              <p>Flashing, get close to your NTAG</p>
+            </>
+          </div>
+        </IonContent>
+      </IonPage>
+    )
   );
 }
 

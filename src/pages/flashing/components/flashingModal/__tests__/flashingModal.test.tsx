@@ -14,8 +14,10 @@ vi.mock("../../../../../services/encryption/encryption", () => ({
 }));
 
 const flashNtagMock = vi.fn();
+const closeMock = vi.fn();
 vi.mock("../../../../../services/flashing/flashing.service", () => ({
   flashNtag: (message: string) => flashNtagMock(message),
+  closeConnection: () => closeMock(),
 }));
 
 describe("Flashing modal should", () => {
@@ -142,7 +144,9 @@ describe("Flashing modal should", () => {
 
   it("clear pk and message after closing flashing", async () => {
     encryptMessageMock.mockReturnValue(encryptedMessageObjectStub);
-    flashNtagMock.mockResolvedValue("");
+    flashNtagMock.mockImplementation(() => {
+      return new Promise(() => setTimeout(() => {}, 500));
+    });
 
     const setErrorMock = vi.fn();
     const setLoadingFlashing = vi.fn();
@@ -161,13 +165,41 @@ describe("Flashing modal should", () => {
       ></FlashingModal>
     );
 
-    act(async () => {
+    await act(async () => {
       fireEvent.click(await findByText("Close"));
     });
 
     await waitFor(() => {
       expect(setPkMock).toHaveBeenCalled();
+      expect(setLoadingFlashing).toHaveBeenCalledWith(false);
       expect(setMessageMock).toHaveBeenCalled();
+    });
+  });
+
+  it("closing nfc connection if closing flashing process", async () => {
+    encryptMessageMock.mockReturnValue(encryptedMessageObjectStub);
+    flashNtagMock.mockResolvedValue("");
+
+    const setErrorMock = vi.fn();
+    const setLoadingFlashing = vi.fn();
+    const setPkMock = vi.fn();
+    const setMessageMock = vi.fn();
+
+    const { getByText } = render(
+      <FlashingModal
+        setPk={setPkMock}
+        setMessage={setMessageMock}
+        isLoadingFlashing={true}
+        message="U2FsdGVkX1891+OcRh6TL7GEetS4f2DGAu6UxEYX6es="
+        pk="pk-test"
+        setError={setErrorMock}
+        setLoadingFlashing={setLoadingFlashing}
+      ></FlashingModal>
+    );
+    await waitFor(() => {
+      const buttonClose = getByText("Close");
+      fireEvent.click(buttonClose);
+      expect(closeMock).toHaveBeenCalled();
     });
   });
 });
