@@ -10,8 +10,8 @@ import {
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { encryptMessage } from "../../../../services/encryption/encryption";
 import {
-  stopFlashing,
   flashNtag,
+  stopFlashing,
 } from "../../../../services/flashing/flashing.service";
 
 interface FlashingModalProps {}
@@ -38,11 +38,7 @@ function FlashingModal({
   const closeHandler: () => void = () => {
     setLoadingFlashing(false);
     cleanFields();
-    try {
-      stopFlashing();
-    } catch (error) {
-      setError((error as Error).message);
-    }
+    stopFlashing();
   };
 
   const cleanFields = () => {
