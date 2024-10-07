@@ -6,13 +6,13 @@ const ReadingPage: React.FC = () => {
   const [isReading, setReading] = useState(false);
 
   return (
-    <div
-      style={{ height: "100%", alignContent: "center", textAlign: "center" }}
-    >
+    <div style={{ height: "100%" }}>
       {!isReading && (
-        <IonButton onClick={() => setReading(true)} fill="outline">
-          START READING
-        </IonButton>
+        <div style={{ height: "100%", alignContent: "center", textAlign: "center" }}>
+          <IonButton onClick={() => setReading(true)} fill="outline">
+            START READING
+          </IonButton>
+        </div>
       )}
       {isReading && (
         <ReadingModal

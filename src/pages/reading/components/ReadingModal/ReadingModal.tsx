@@ -1,7 +1,4 @@
-import {
-  IonButton,
-  IonSpinner
-} from "@ionic/react";
+import { IonButton, IonSpinner } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import {
   closeReadingSession,
@@ -35,20 +32,12 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
   }, []);
 
   return (
-    <div data-testid="reading__loading-modal">
+    <div data-testid="reading__loading-modal" style={{height:"100%",display:"flex", flexDirection:"column", padding:"5%"}}>
       <div style={{ alignContent: "center", textAlign: "center" }}>
         {!encryptedReadResult && !error && (
           <>
             <IonSpinner data-testid="reading__loading-icon"></IonSpinner>
             <p>Reading, get close to your NTAG</p>
-            <IonButton
-              onClick={() => {
-                setReading(false);
-                closeReadingSession();
-              }}
-            >
-              Close
-            </IonButton>
           </>
         )}
 
@@ -68,6 +57,18 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
             {error}
           </div>
         )}
+      </div>
+
+      <div style={{marginTop:"auto"}}>
+        <IonButton
+          style={{ width: "100%" }}
+          onClick={() => {
+            setReading(false);
+            closeReadingSession();
+          }}
+        >
+          Close
+        </IonButton>
       </div>
     </div>
   );
