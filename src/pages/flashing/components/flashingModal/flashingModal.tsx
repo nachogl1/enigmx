@@ -7,6 +7,8 @@ import {
   stopFlashing,
 } from "../../../../services/flashing/flashing.service";
 
+const NO_CONTENT_MESSAGE = "no elements in sequence";
+
 interface FlashingModalProps {}
 
 interface FlashingModalProps {
@@ -53,7 +55,13 @@ function FlashingModal({
 
     flashNtag(encryptedMessage)
       .catch((error) => {
-        setError((error as Error).message);
+        const stringError = (error as Error).message;
+
+        if (stringError.toLowerCase() === NO_CONTENT_MESSAGE) {
+          return;
+        }
+
+        setError(stringError);
       })
       .finally(() => {
         setLoadingFlashing(false);

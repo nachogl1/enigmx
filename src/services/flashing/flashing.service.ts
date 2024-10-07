@@ -1,5 +1,5 @@
 import { Ndef, NFC } from "@awesome-cordova-plugins/nfc";
-import { firstValueFrom, Subject, takeUntil, tap } from "rxjs";
+import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 const subjectCloseNFCConnection = new Subject<boolean>();
 let isFlashingNDEFListenerOn = false;
@@ -8,13 +8,7 @@ export const flashNtag: (data: string) => Promise<any> = async (
   data: string
 ) => {
   return firstValueFrom(
-    NFC.addNdefListener().pipe(
-      takeUntil(subjectCloseNFCConnection),
-      tap(() => {
-        console.info("Stopping NDEF listener");
-        isFlashingNDEFListenerOn = false;
-      })
-    )
+    NFC.addNdefListener().pipe(takeUntil(subjectCloseNFCConnection))
   )
     .then(() => {
       isFlashingNDEFListenerOn = true;

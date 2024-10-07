@@ -87,6 +87,34 @@ describe("Flashing modal should", () => {
     });
   });
 
+  it.only("foo", async () => {
+    encryptMessageMock.mockReturnValue(encryptedMessageObjectStub);
+    flashNtagMock.mockRejectedValue(new Error("No elements in sequence"));
+
+    const setErrorMock = vi.fn();
+    const setLoadingFlashing = vi.fn();
+
+    render(
+      <FlashingModal
+        setPk={vi.fn()}
+        setMessage={vi.fn()}
+        isLoadingFlashing={true}
+        message="U2FsdGVkX1891+OcRh6TL7GEetS4f2DGAu6UxEYX6es="
+        pk="pk-test"
+        setError={setErrorMock}
+        setLoadingFlashing={setLoadingFlashing}
+      ></FlashingModal>
+    );
+
+    await waitFor(() => {
+      expect(flashNtagMock).toHaveBeenCalledWith(
+        "U2FsdGVkX1891+OcRh6TL7GEetS4f2DGAu6UxEYX6es="
+      );
+      expect(setErrorMock).not.toHaveBeenCalled();
+      expect(setLoadingFlashing).toHaveBeenCalledWith(false);
+    });
+  });
+
   it("warns the user if flashing process fails", async () => {
     encryptMessageMock.mockReturnValue(encryptedMessageObjectStub);
     flashNtagMock.mockRejectedValue(new Error("Error nfc flashing"));
