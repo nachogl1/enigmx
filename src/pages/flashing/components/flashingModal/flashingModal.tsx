@@ -1,13 +1,6 @@
-import {
-  IonButton,
-  IonButtons,
-  IonContent,
-  IonHeader,
-  IonPage,
-  IonSpinner,
-  IonToolbar,
-} from "@ionic/react";
+import { IonSpinner } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect } from "react";
+import { Button } from "react-bootstrap";
 import { encryptMessage } from "../../../../services/encryption/encryption";
 import {
   flashNtag,
@@ -74,29 +67,22 @@ function FlashingModal({
 
   return (
     isLoadingFlashing && (
-      <IonPage data-testid="flashing__loading-modal">
-        <IonHeader>
-          <IonToolbar>
-            <IonButtons slot="end">
-              <IonButton
-                onClick={() => {
-                  closeHandler();
-                }}
-              >
-                Close
-              </IonButton>
-            </IonButtons>
-          </IonToolbar>
-        </IonHeader>
-        <IonContent className="ion-padding">
-          <div style={{ alignContent: "center", textAlign: "center" }}>
-            <>
-              <IonSpinner data-testid="flashing__loading-icon"></IonSpinner>
-              <p>Flashing, get close to your NTAG</p>
-            </>
-          </div>
-        </IonContent>
-      </IonPage>
+      <div data-testid="flashing__loading-modal">
+        <div style={{ alignContent: "center", textAlign: "center" }}>
+          <>
+            <IonSpinner data-testid="flashing__loading-icon"></IonSpinner>
+            <p>Flashing, get close to your NTAG</p>
+
+            <Button
+              onClick={() => {
+                closeHandler();
+              }}
+            >
+              Close
+            </Button>
+          </>
+        </div>
+      </div>
     )
   );
 }
