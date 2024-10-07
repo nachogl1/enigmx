@@ -3,12 +3,14 @@ import {
   IonButtons,
   IonContent,
   IonHeader,
-  IonModal,
   IonSpinner,
-  IonToolbar,
+  IonToolbar
 } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { readFromNtagV2 } from "../../../../services/readingV2/readingV2.service";
+import {
+  closeReadingSession,
+  readFromNtagV2,
+} from "../../../../services/readingV2/readingV2.service";
 import DecryptDialog from "../decryptDialog/decryptDialog";
 
 interface ReadingModalProps {
@@ -37,11 +39,18 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
   }, []);
 
   return (
-    <IonModal data-testid="reading__loading-modal" isOpen={isReading}>
+    <div data-testid="reading__loading-modal">
       <IonHeader>
         <IonToolbar>
           <IonButtons slot="end">
-            <IonButton onClick={() => setReading(false)}>Close</IonButton>
+            <IonButton
+              onClick={() => {
+                setReading(false);
+                closeReadingSession();
+              }}
+            >
+              Close
+            </IonButton>
           </IonButtons>
         </IonToolbar>
       </IonHeader>
@@ -72,7 +81,7 @@ function ReadingModal({ isReading, setReading }: ReadingModalProps) {
           )}
         </div>
       </IonContent>
-    </IonModal>
+    </div>
   );
 }
 

@@ -2,7 +2,7 @@ import { Ndef, NFC } from "@awesome-cordova-plugins/nfc";
 import { firstValueFrom, Subject, takeUntil, tap } from "rxjs";
 
 const subjectCloseNFCConnection = new Subject<boolean>();
-let isNDEFListenerOn = false;
+let isFlashingNDEFListenerOn = false;
 
 export const flashNtag: (data: string) => Promise<any> = async (
   data: string
@@ -12,17 +12,17 @@ export const flashNtag: (data: string) => Promise<any> = async (
       takeUntil(subjectCloseNFCConnection),
       tap(() => {
         console.info("Stopping NDEF listener");
-        isNDEFListenerOn = false;
+        isFlashingNDEFListenerOn = false;
       })
     )
   )
     .then(() => {
-      isNDEFListenerOn = true;
+      isFlashingNDEFListenerOn = true;
       const ndefRecord = Ndef.textRecord(data);
       return NFC.write([ndefRecord]);
     })
     .finally(() => {
-      isNDEFListenerOn = false;
+      isFlashingNDEFListenerOn = false;
     });
 };
 
@@ -31,5 +31,5 @@ export const stopFlashing: () => void = async () => {
 };
 
 export const getIsNDEFListenerOn = () => {
-  return isNDEFListenerOn;
+  return isFlashingNDEFListenerOn;
 };

@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { Dispatch, SetStateAction } from "react";
 import { describe, it, vi } from "vitest";
 import ReadingModal from "../ReadingModal";
@@ -6,9 +6,11 @@ import ReadingModal from "../ReadingModal";
 const encryptedText = "U2FsdGVkX1891+OcRh6TL7GEetS4f2DGAu6UxEYX6es=";
 
 const readerModeMock = vi.fn();
+const closeReadingMock = vi.fn();
 
 vi.mock("../../../../../services/readingV2/readingV2.service", () => ({
   readFromNtagV2: () => readerModeMock(),
+  closeReadingSession: () => closeReadingMock(),
 }));
 
 describe("Reading Modal should", () => {
@@ -60,6 +62,25 @@ describe("Reading Modal should", () => {
       expect(readingLoadingIcon).not.toBeInTheDocument();
       expect(readingMessage).not.toBeInTheDocument();
       expect(dialog).not.toBeInTheDocument();
+    });
+  });
+
+  it("close reading when closing modal", async () => {
+    readerModeMock.mockImplementation(() => {
+      return new Promise(() => setTimeout(() => {}, 5000));
+    });
+
+    const { findByText } = render(
+      <ReadingModal
+        isReading={true}
+        setReading={vi.fn()}
+      ></ReadingModal>
+    );
+
+    await waitFor(async () => {
+      const buttonClose = await findByText("Close");
+      fireEvent.click(buttonClose);
+      expect(closeReadingMock).toHaveBeenCalled();
     });
   });
 });

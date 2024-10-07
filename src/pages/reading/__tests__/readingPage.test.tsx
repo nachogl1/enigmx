@@ -11,9 +11,11 @@ const nfcTag: NfcTag = {
 const readerModeMock: Promise<NfcTag> = new Promise<NfcTag>((resolve) => {
     resolve(nfcTag);
 });
+const closeReadingMock = vi.fn();
 
 vi.mock('../../../services/readingV2/readingV2.service', () => ({
     readFromNtagV2: () => readerModeMock,
+    closeReadingSession: () => closeReadingMock,
 }))
 
 describe("Reading Page should", () => {
@@ -54,6 +56,7 @@ describe("Reading Page should", () => {
             const readingModal = getByTestId("reading__loading-modal");
             expect(readButton).toBeInTheDocument();
             expect(readingModal).not.toBeInTheDocument();
+            expect(closeReadingMock).toHaveBeenCalled();
         });
 
 

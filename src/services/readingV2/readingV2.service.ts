@@ -1,7 +1,9 @@
 import { NFC, NfcTag } from "@awesome-cordova-plugins/nfc";
-import { firstValueFrom } from "rxjs";
+import { firstValueFrom, Subject, takeUntil } from "rxjs";
 
 const START_OF_REAL_ENCRYPTED_MESSAGE = "U2Fsd";
+const readingSubject = new Subject<boolean>();
+let isReadingNDEFListenerOn = false;
 
 export const readFromNtagV2: () => Promise<string> = async () => {
   const ntagObject = await readFromNtag();
@@ -12,8 +14,21 @@ export const readFromNtagV2: () => Promise<string> = async () => {
   return decodeMessageWithoutLanguagePrefix;
 };
 
+export const closeReadingSession = () => {
+  readingSubject.next(false);
+};
+
+export const getIsReadingNDEFListenerOn: () => boolean = () => {
+  return isReadingNDEFListenerOn;
+};
+
 const readFromNtag = async () => {
-  return firstValueFrom(NFC.readerMode(getPredefinedNFCFlags()));
+  isReadingNDEFListenerOn = true;
+  return firstValueFrom(
+    NFC.readerMode(getPredefinedNFCFlags()).pipe(takeUntil(readingSubject))
+  ).finally(() => {
+    isReadingNDEFListenerOn = false;
+  });
 };
 
 const getPredefinedNFCFlags = () => {
