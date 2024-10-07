@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test": "vitest run",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "prep:ionic": "ionic cap sync && ionic cap open android"
   },
   "dependencies": {
     "@awesome-cordova-plugins/core": "^6.8.0",
