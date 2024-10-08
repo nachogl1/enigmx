@@ -9,7 +9,7 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
-  setupIonicReact
+  setupIonicReact,
 } from "@ionic/react";
 import React from "react";
 
@@ -44,7 +44,7 @@ import ReadingPage from "./pages/reading/ReadingPage";
 
 setupIonicReact();
 
-const applicationTitle = "ENIGMX";
+const applicationTitle = "ENIGMA";
 
 const App: React.FC = () => {
   const { nfcEnabled } = useNfc();
@@ -64,7 +64,7 @@ const App: React.FC = () => {
                 <IonButtons slot="start">
                   <IonMenuButton data-testid="sideMenu__button"></IonMenuButton>
                 </IonButtons>
-                <IonTitle>{applicationTitle}</IonTitle>
+                <IonTitle> {applicationTitle}</IonTitle>
               </IonToolbar>
             </IonHeader>
             <IonContent className="ion-padding">
@@ -87,31 +87,43 @@ const App: React.FC = () => {
       )}
 
       {!nfcEnabled && (
-        <div
-          className="alert alert-danger m-5"
-          data-testid="nfc__warning"
-          role="alert"
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <div>
-            NFC not enabled in this device, waiting to be turned on,
-            <a
-              data-testid="clickable-nfc-warning"
-              style={{ color: "blue" }}
-              onClick={() => openNfcSettingsHandler()}
+        <IonPage id="main-content">
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonMenuButton data-testid="sideMenu__button"></IonMenuButton>
+              </IonButtons>
+              <IonTitle>{applicationTitle}</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <div
+              className="alert alert-danger m-5"
+              data-testid="nfc__warning"
+              role="alert"
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
             >
-              click here to go to settings...
-            </a>
-          </div>
-          <div>
-            <IonSpinner></IonSpinner>
-          </div>
-        </div>
+              <div>
+                NFC not enabled in this device, waiting to be turned on,
+                <a
+                  data-testid="clickable-nfc-warning"
+                  style={{ color: "blue" }}
+                  onClick={() => openNfcSettingsHandler()}
+                >
+                  click here to go to settings...
+                </a>
+              </div>
+              <div>
+                <IonSpinner color="black"></IonSpinner>
+              </div>
+            </div>
+          </IonContent>
+        </IonPage>
       )}
     </IonApp>
   );

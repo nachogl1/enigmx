@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "com.nachogl1.enigma",
+  appId: "com.nachogl1dev.enigma",
   appName: "enigma",
   webDir: "dist",
   server: {

@@ -45,11 +45,11 @@ function DecryptDialog({ encryptedPayload, setError }: DecryptDialogProps) {
       ></input>
 
       <IonButton
+        fill="outline"
         data-testid="decypt__button"
         onClick={() => {
           decryptHandler();
         }}
-        fill="outline"
       >
         Decrypt
       </IonButton>

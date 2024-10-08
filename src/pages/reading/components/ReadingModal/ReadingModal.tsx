@@ -61,7 +61,7 @@ function ReadingModal({ setReading }: ReadingModalProps) {
       </div>
 
       <div style={{marginTop:"auto"}}>
-        <IonButton
+        <IonButton fill="outline"
           style={{ width: "100%" }}
           onClick={() => {
             setReading(false);

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.nachogl1.enigma"
+    namespace "com.nachogl1dev.enigma"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.nachogl1.enigma"
+        applicationId "com.nachogl1dev.enigma"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

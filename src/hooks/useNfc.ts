@@ -20,7 +20,7 @@ function useNfc() {
       });
   };
 
-  return {nfcEnabled};
+  return { nfcEnabled };
 }
 
 export default useNfc;

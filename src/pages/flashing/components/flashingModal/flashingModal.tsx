@@ -1,4 +1,4 @@
-import { IonSpinner } from "@ionic/react";
+import { IonButton, IonSpinner } from "@ionic/react";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { encryptMessage } from "../../../../services/encryption/encryption";
@@ -81,13 +81,13 @@ function FlashingModal({
             <IonSpinner data-testid="flashing__loading-icon"></IonSpinner>
             <p>Flashing, get close to your NTAG</p>
 
-            <Button
+            <IonButton fill="outline"
               onClick={() => {
                 closeHandler();
               }}
             >
               Close
-            </Button>
+            </IonButton>
           </>
         </div>
       </div>
