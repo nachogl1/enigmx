@@ -1,4 +1,4 @@
-package io.ionic.enigmx;
+package com.nachogl1.enigmx;
 
 import com.getcapacitor.BridgeActivity;
 
