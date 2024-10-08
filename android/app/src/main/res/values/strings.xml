@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">enigmx</string>
-    <string name="title_activity_main">enigmx</string>
-    <string name="package_name">com.nachogl1.enigmx</string>
-    <string name="custom_url_scheme">com.nachogl1.enigmx</string>
+    <string name="app_name">enigma</string>
+    <string name="title_activity_main">enigma</string>
+    <string name="package_name">com.nachogl1.enigma</string>
+    <string name="custom_url_scheme">com.nachogl1.enigma</string>
 </resources>

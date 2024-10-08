@@ -1,4 +1,4 @@
-package com.nachogl1.enigmx;
+package com.nachogl1.enigma;
 
 import com.getcapacitor.BridgeActivity;
 
