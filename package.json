@@ -13,7 +13,9 @@
     "test": "vitest run",
     "lint": "eslint",
     "prepare": "husky",
-    "prep:ionic": "ionic cap sync && ionic cap open android"
+    "prep:ionic": "ionic cap sync && ionic cap open android",
+    "install:device": "sh ./scripts/installonDevice.sh",
+    "log:device:error": "sh ./scripts/showLogsDevice.sh"
   },
   "dependencies": {
     "@awesome-cordova-plugins/core": "^6.8.0",
