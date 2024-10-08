@@ -15,7 +15,8 @@
     "prepare": "husky",
     "prep:ionic": "ionic cap sync && ionic cap open android",
     "install:device": "sh ./scripts/installonDevice.sh",
-    "log:device:error": "sh ./scripts/showLogsDevice.sh"
+    "log:device:error": "sh ./scripts/showLogsDevice.sh",
+    "createIcons": "npx capacitor-assets generate"
   },
   "dependencies": {
     "@awesome-cordova-plugins/core": "^6.8.0",
