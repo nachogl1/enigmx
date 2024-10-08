@@ -9,10 +9,9 @@ import {
   IonSpinner,
   IonTitle,
   IonToolbar,
-  isPlatform,
-  setupIonicReact,
+  setupIonicReact
 } from "@ionic/react";
-import React, { useEffect } from "react";
+import React from "react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -49,12 +48,6 @@ const applicationTitle = "ENIGMX";
 
 const App: React.FC = () => {
   const { nfcEnabled } = useNfc();
-
-  useEffect(() => {
-    if (process.env.NODE_ENV !== "production" && !isPlatform("hybrid")) {
-      return;
-    }
-  });
 
   const openNfcSettingsHandler = async () => {
     await NFC.showSettings();
