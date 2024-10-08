@@ -6,12 +6,13 @@ import {
   IonMenuButton,
   IonPage,
   IonRouterOutlet,
+  IonSpinner,
   IonTitle,
   IonToolbar,
   isPlatform,
   setupIonicReact,
 } from "@ionic/react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 /* Core CSS required for Ionic components to work properly */
 import "@ionic/react/css/core.css";
@@ -33,11 +34,11 @@ import "@ionic/react/css/text-transformation.css";
 import "./theme/variables.css";
 
 // Bootstrap
-import { NFC } from "@awesome-cordova-plugins/nfc";
 import { IonReactRouter } from "@ionic/react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Route } from "react-router";
 import SideMenu from "./components/side-menu/sideMenu";
+import useNfc from "./hooks/useNfc";
 import FlashingPage from "./pages/flashing/FlashingPage";
 import ReadingPage from "./pages/reading/ReadingPage";
 
@@ -46,20 +47,12 @@ setupIonicReact();
 const applicationTitle = "ENIGMX";
 
 const App: React.FC = () => {
-  const [nfcEnabled, setNfcENabled] = useState<boolean>(true);
+  const { nfcEnabled } = useNfc();
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production" && !isPlatform("hybrid")) {
       return;
     }
-
-    NFC.enabled()
-      .then(() => {
-        setNfcENabled(true);
-      })
-      .catch(() => {
-        setNfcENabled(false);
-      });
   });
 
   return (
@@ -100,8 +93,17 @@ const App: React.FC = () => {
           className="alert alert-danger m-5"
           data-testid="nfc__warning"
           role="alert"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
-          NFC not enabled in this device
+          <div>NFC not enabled in this device, waiting to be turned on...</div>
+          <div>
+            <IonSpinner></IonSpinner>
+          </div>
         </div>
       )}
     </IonApp>
