@@ -34,6 +34,7 @@ import "@ionic/react/css/text-transformation.css";
 import "./theme/variables.css";
 
 // Bootstrap
+import { NFC } from "@awesome-cordova-plugins/nfc";
 import { IonReactRouter } from "@ionic/react-router";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Route } from "react-router";
@@ -54,6 +55,10 @@ const App: React.FC = () => {
       return;
     }
   });
+
+  const openNfcSettingsHandler = async () => {
+    await NFC.showSettings();
+  };
 
   return (
     <IonApp>
@@ -100,7 +105,16 @@ const App: React.FC = () => {
             alignItems: "center",
           }}
         >
-          <div>NFC not enabled in this device, waiting to be turned on...</div>
+          <div>
+            NFC not enabled in this device, waiting to be turned on,
+            <a
+              data-testid="clickable-nfc-warning"
+              style={{ color: "blue" }}
+              onClick={() => openNfcSettingsHandler()}
+            >
+              click here to go to settings...
+            </a>
+          </div>
           <div>
             <IonSpinner></IonSpinner>
           </div>

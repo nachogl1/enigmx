@@ -1,4 +1,4 @@
-import { render, waitFor } from "@testing-library/react";
+import { fireEvent, render, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import App from "./App";
 import * as hooks from "./hooks/useNfc";
@@ -10,6 +10,17 @@ vi.mock("@ionic/react", async () => {
   return {
     ...actual,
     isPlatform: () => isPlatformMock(),
+  };
+});
+
+const openSettingsMock = vi.fn();
+vi.mock("@awesome-cordova-plugins/nfc", async (importOriginal) => {
+  const actual: Record<any, any> = await importOriginal();
+  return {
+    ...actual,
+    NFC: {
+      showSettings: () => openSettingsMock(),
+    },
   };
 });
 
@@ -88,6 +99,15 @@ describe("App should", () => {
       vi.spyOn(hooks, "default").mockReturnValue({ nfcEnabled: false });
       const { queryByTestId } = render(<App></App>);
       expect(queryByTestId("nfc__warning")).toBeInTheDocument();
+    });
+
+    it("not available, and you click to access nfc settings, it should open for you", async () => {
+      vi.spyOn(hooks, "default").mockReturnValue({ nfcEnabled: false });
+      const { getByTestId } = render(<App></App>);
+      await waitFor(() => {
+        fireEvent.click(getByTestId("clickable-nfc-warning"));
+        expect(openSettingsMock).toHaveBeenCalled();
+      });
     });
   });
 });
